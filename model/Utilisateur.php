@@ -4,12 +4,14 @@ class Utilisateur
     private $ID;
     private $nom;
     private $mdp;
+    private $listes;
 
     public function __construct ($ID, $nom, $mdp)
     {
     $this->ID=$ID;
     $this->nom=$nom;
     $this->mdp=$mdp;
+    $liste = array();
     }
 
     public function __get($propriete){

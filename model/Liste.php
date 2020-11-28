@@ -4,13 +4,14 @@ class Liste
     private $ID;
     private $nom;
     private $privee;
+    private $taches;
 
     public function __construct ($ID, $nom, $privee)
     {
     $this->ID=$ID;
     $this->nom=$nom;
     $this->privee=$privee;
-
+    $this->taches = array();
     }
 
     public function __get($propriete){

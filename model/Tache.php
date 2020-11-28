@@ -3,16 +3,14 @@ class Tache
 {
     private $ID;
     private $nom;
-    private $description;
     private $faite;
     private $privee;
 
-    public function __construct ($ID, $nom, $description,$privee)
+    public function __construct ($ID, $nom, $faite, $privee)
     {
     $this->ID=$ID;
     $this->nom=$nom;
-    $this->description=$description;
-    $this->faite=false;
+    $this->faite=$faite;
     $this->privee=$privee;
     }
 
@@ -30,7 +28,6 @@ class Tache
         $str="$str Class : $class<br/>";
         $str="$str ID : $this->ID<br/>";
         $str="$str Nom : $this->nom<br/>";
-        $str="$str Description: $this->description<br/>";
         if($this->faite)
             $str="$str $class effectuée<br/>";
         else
