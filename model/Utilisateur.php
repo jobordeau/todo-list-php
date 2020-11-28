@@ -1,26 +1,15 @@
 <?php
-require_once("Visiteur.php");
-class Utilisateur extends Visiteur
+class Utilisateur
 {
-
+    private $ID;
     private $nom;
-    private $psswd;
+    private $mdp;
 
-    public function __construct ($ID, $nom, $psswd)
+    public function __construct ($ID, $nom, $mdp)
     {
-    parent::__construct($ID);
+    $this->ID=$ID;
     $this->nom=$nom;
-    $this->psswd=$psswd;
-    }
-
-    public function __toString(){
-        $class=get_class($this);
-        $str="";
-        $str="$str Class : $class<br/>";
-        $str="$str ID : $this->ID<br/>";
-        $str="$str Nom : $this->nom<br/>";
-        $str="Mot de passe : $this->psswd<br/>";
-    return $str;
+    $this->mdp=$mdp;
     }
 
     public function __get($propriete){
@@ -30,8 +19,15 @@ class Utilisateur extends Visiteur
     public function __set($propriete,$val){
         $this->$propriete=$val;
     }
+
+    public function __toString(){
+        $class=get_class($this);
+        $str="";
+        $str="$str Class : $class<br/>";
+        $str="$str ID : $this->ID<br/>";
+        $str="$str Nom : $this->nom<br/>";
+        $str="Mot de passe : $this->mdp<br/>";
+    return $str;
+    }
 }
 
-//temporaire c'est juste pour tester
-$test=new Utilisateur(58,'jojo', '12345');
-echo $test;
