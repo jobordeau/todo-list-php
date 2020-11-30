@@ -4,6 +4,7 @@ class Utilisateur
     private $ID;
     private $nom;
     private $mdp;
+    private $listes;
 
     public function __construct ($ID, $nom, $mdp)
     {

@@ -3,7 +3,6 @@ class Tache
 {
     private $ID;
     private $nom;
-    private $description;
     private $faite;
     private $privee;
 
@@ -11,7 +10,6 @@ class Tache
     {
     $this->ID=$ID;
     $this->nom=$nom;
-    $this->description=$description;
     $this->faite=false;
     $this->privee=$privee;
     }
@@ -30,7 +28,6 @@ class Tache
         $str="$str Class : $class<br/>";
         $str="$str ID : $this->ID<br/>";
         $str="$str Nom : $this->nom<br/>";
-        $str="$str Description: $this->description<br/>";
         if($this->faite)
             $str="$str $class effectuée<br/>";
         else
