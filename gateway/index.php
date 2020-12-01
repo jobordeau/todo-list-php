@@ -9,7 +9,7 @@
 	require("UtilisateurGateway.php");
 
 	//A CHANGER (utiliser pour tester localement)
-	$user= 'alex';
+	$user= 'alann';
 	$pass='user';
 	$dsn='mysql:host=localhost;dbname=projet_php';
 

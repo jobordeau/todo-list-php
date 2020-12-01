@@ -2,7 +2,7 @@
 
 //chargement des classes
 require_once(__DIR__.'/../config/Validation.php');
-require_once(__DIR__.'/../modeles/Utilisateur.php');
+require_once(__DIR__.'/../entites/Utilisateur.php');
 
 
 //debut
