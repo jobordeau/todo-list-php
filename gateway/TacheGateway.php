@@ -1,7 +1,7 @@
 <?php
 	require('Gateway.php');
-    require('../model/Tache.php');
-    require('../model/Liste.php');
+    require('../entites/Tache.php');
+    require('../entites/Liste.php');
 
     
     class TacheGateway extends Gateway {

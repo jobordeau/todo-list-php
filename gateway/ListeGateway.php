@@ -1,6 +1,6 @@
 <?php
 	require('Gateway.php');
-    require('../model/Liste.php');
+    require('../entites/Liste.php');
     
     class ListeGateway extends Gateway {
             
