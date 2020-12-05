@@ -12,6 +12,7 @@ class Liste
     $this->ID=$ID;
     $this->nom=$nom;
     $this->privee=$privee;
+    $this->taches=array();
     }
 
     public function __get($propriete){

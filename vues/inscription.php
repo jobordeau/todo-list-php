@@ -5,7 +5,7 @@
 </head>
 
 <body>
-<a href="../vues/seConnecter.php" url="">Se connecter</a>
+<a href="../controleur/ConSeConnecter.php" url="">Se connecter</a>
 <div align="center">
 
 
@@ -31,15 +31,7 @@
 				<td><input name="txtConf"  type="text" size="20" placeholder="Confirmer le mot de passe"></td>
 			</tr> 
 			<tr><td colspan="2" align=center>
-				<?php
-					if (isset($dataVueErreur) && count($dataVueErreur)>0) {
-					foreach ($dataVueErreur as $value){
-						if(next($dataVueErreur) != null)
-							echo "$value / ";
-						else
-							echo "$value !";
-					}}
-				?>
+			<?php include('erreurConnexion.php') ; ?>
 			</td></tr>
 		</table>
 		<table> 

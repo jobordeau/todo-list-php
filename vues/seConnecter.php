@@ -5,7 +5,7 @@
 </head>
 
 <body>
-<a href="../vues/inscription.php" url="">Créer un compte</a>
+<a href="../controleur/ConInscription.php" url="">Créer un compte</a>
 <div align="center">
 
 
@@ -27,15 +27,7 @@
 				<td><input name="txtMdp"  type="text" size="20"></td>
 			</tr>
 			<tr><td colspan="2" align=center>
-				<?php
-					if (isset($dataVueErreur) && count($dataVueErreur)>0) {
-					foreach ($dataVueErreur as $value){
-						if(next($dataVueErreur) != null)
-							echo "$value / ";
-						else
-							echo "$value !";
-					}}
-				?>
+			<?php include('erreurConnexion.php') ; ?>
 			</td></tr>
 		</table>
 		<table> 

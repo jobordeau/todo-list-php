@@ -11,6 +11,7 @@ class Utilisateur
     $this->ID=$ID;
     $this->nom=$nom;
     $this->mdp=$mdp;
+    $this->listes=array();
     }
 
     public function __get($propriete){

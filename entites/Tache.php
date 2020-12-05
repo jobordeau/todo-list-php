@@ -6,7 +6,7 @@ class Tache
     private $faite;
     private $privee;
 
-    public function __construct ($ID, $nom, $description,$privee)
+    public function __construct ($ID, $nom,$privee)
     {
     $this->ID=$ID;
     $this->nom=$nom;
