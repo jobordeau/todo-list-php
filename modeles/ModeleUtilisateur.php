@@ -10,7 +10,7 @@
 
         function __construct(){
             global $login, $mdp, $dsn;
-            $this->gtw = new UtilisateurGateway(new Connection($dsn, $login, $mdp));
+            $this->gtw = new UtilisateurGateway((Connection::getConnection($dsn, $login, $mdp)));
         }
 
         public function authentification(string $nom, string $mdp){

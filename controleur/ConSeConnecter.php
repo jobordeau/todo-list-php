@@ -65,7 +65,7 @@ function Connexion() {
 	
 	if(empty($dataVueErreur)){
 		$_SESSION['utilisateur']=$utilisateur;
-		header('Location: /php/projet/controleur/ConListes.php');
+		header('Location: /todo-liste-php/controleur/ConListes.php');
 	}
 	else{
 		require (__DIR__.'/../vues/seConnecter.php');

@@ -11,7 +11,7 @@
 
         function __construct(){
             global $login, $mdp, $dsn;
-            $this->gtw = new TacheGateway(new Connection($dsn, $login, $mdp));
+            $this->gtw = new TacheGateway((Connection::getConnection($dsn, $login, $mdp)));
         }
 
         public function creerTache(string $nom, bool $privee , int $idLi){

@@ -10,7 +10,8 @@
 
         function __construct(){
             global $login, $mdp, $dsn;
-            $this->gtw = new ListeGateway(new Connection($dsn, $login, $mdp));
+            $this->gtw = new ListeGateway(Connection::getConnection($dsn, $login, $mdp));
+
         }
 
         public function creerListePrivee(string $nom, int $idUti){
