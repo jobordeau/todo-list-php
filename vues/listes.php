@@ -9,28 +9,30 @@
     {
         border: 1px solid black;
     }
+    #listes
+    {
+        border: 0px solid black;
+    }
     </style>
-</script>
 </head>
 
 <body>
 
-
-<a href="../controleur/ConSeConnecter.php" url="">Se connecter</a>
-<a href="../controleur/ConInscription.php" url="">Créer un compte</a>
-
-
-
-<div align="center">
+<?php if(isset($_SESSION['listesPrivees'])) 
+    echo "<a href='listes.php'>Se déconnecter</a>"
+?>
+<a href="../controleur/ConSeConnecter.php">Se connecter</a>
+<a href="../controleur/ConInscription.php">Créer un compte</a>
 
 
 
-
-
-	<h2>Listes</h2>
-    <form method="post" name="myform" id="myform">
+<table width="100%">
+<tr>
+<td id="listes" align="center">
+	<h2>Listes Publiques</h2>
+    <form method="post">
         <?php 
-            foreach($_SESSION['listeVisible'] as $liste){
+            foreach($_SESSION['listesPubliques'] as $liste){
                 echo "<input name='action' type='submit' value='❌'><table>
                 <tr>
                     <th>$liste->nom</th>
@@ -48,27 +50,30 @@
                     </br>";
             }
         ?>
-        <table>
-            <tr>
-                <th><input name='nomListe' type='text' value='Nom de la liste'></th>
-            </tr>
-            <tr>
-                <td><input name='nomTache' type='text' value='Tache'>
-                    <input name='action' type='button' value='-'>   
-                </td>
-            </tr>
-            <tr>
-                <td><input name='action' type='button' value='ajouter une tache'></td>
-            </tr>
-        </table>
-        <input name='action' type='submit' value='Ajouter la liste'>
-        </br></br>
-        <input name='action' type='submit' value='Confirmer les modifications'>
     </form>
-
-
-	
+</td>
+<?php if(isset($_SESSION['listesPrivees'])) 
+require ('listesPrivees.php');
+?>
+</tr>
+</table>
+<div align="center">
+<table>
+    <tr>
+        <th><input name='nomListe' type='text' value='Nom de la liste'></th>
+    </tr>
+    <tr>
+        <td><input name='nomTache' type='text' value='Tache'>
+            <input name='action' type='button' value='-'>   
+        </td>
+    </tr>
+    <tr>
+        <td><input name='action' type='button' value='ajouter une tache'></td>
+    </tr>
+</table>
+<input name='action' type='submit' value='Ajouter la liste'>
+</br></br>
+<input name='action' type='submit' value='Confirmer les modifications'>
 </div>
-
 
 </body> </html> 

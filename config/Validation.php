@@ -1,6 +1,6 @@
 <?php
-
 namespace config;
+require(__DIR__.'/../modeles/ModeleUtilisateur.php');
 
 class Validation {
 
@@ -58,6 +58,18 @@ class Validation {
             $mdp="";
         }
 
+        if(!isset($dVueEreur)){
+            return;
+        }else{
+            $modele=new ModeleUtilisateur();
+            $utilisateur=$modele->authentification($nom,$mdp);
+            if(!isset($utilisater)) {
+                $dVueEreur[] =	"Mot de passe ou identifiant incorrect";
+                $mdp="";
+            }else{
+                $_SESSION['utilisateur']=$utilisateur;
+            }
+        }
         //tester si l'identifiant et le mot de passe correspondent à un compte dans la bdd
     }
 

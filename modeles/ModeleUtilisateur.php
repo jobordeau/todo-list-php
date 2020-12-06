@@ -1,8 +1,8 @@
 <?php
-    require('../gateway/Connection.php');
-    require('../config/config.php');
-    require('../entites/Utilisateur.php');
-    require('../gateway/UtilisateurGateway.php');
+    require_once('../gateway/Connection.php');
+    require_once('../config/config.php');
+    require_once('../entites/Utilisateur.php');
+    require_once('../gateway/UtilisateurGateway.php');
     
 
     class ModeleUtilisateur {

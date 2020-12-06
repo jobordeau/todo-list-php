@@ -2,10 +2,10 @@
 
 //chargement des classes
 require_once(__DIR__.'/../config/Validation.php');
-require_once(__DIR__.'/../entites/Utilisateur.php');
-require_once(__DIR__.'/../entites/Liste.php');
-require_once(__DIR__.'/../entites/Tache.php');
 require_once(__DIR__.'/../données/Stub.php');
+require_once(__DIR__.'/../modeles/ModeleListe.php');
+require_once(__DIR__.'/../modeles/ModeleTache.php');
+require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
 //debut
 session_start();
 //on initialise un tableau d'erreur
@@ -52,6 +52,19 @@ exit(0);
 function initListes()  {	
 	//Données pour tester la vue des listes sans base de données
 	//$_SESSION['listeVisible'] =$listeVisible=Stub::creerListeVisible();
+	$modele = new ModeleListe();
+	$modeleTache = new ModeleTache();
+	$listesPuliques=$modele->trouverListePublique();
+	foreach($listesPuliques as $liste){
+		$liste->taches=$modeleTache->trouverTacheListe($liste);
+	}
+	$_SESSION['listesPubliques']=$listesPuliques;
+	if(isset($_SESSION['listesPrivees'])){
+		$listesPrivees=$modele->trouverListeUtilisateur();
+		foreach($listesPrivees as $liste){
+			$liste->taches=$modeleTache->trouverTacheListe($liste);
+		}
+	}
 	
 
 	require (__DIR__.'/../vues/listes.php');
@@ -59,7 +72,7 @@ function initListes()  {
 
 function CreerListe(){
 	//création dans la base de donnée
-	//	...
+	
 	$IDListe=0;
 	$IDTache=0;
 	$nomListe=$_REQUEST['nomListe'];

@@ -56,14 +56,10 @@ $dataVue = array (
 function Connexion() {
 	global $dataVueErreur;// nécessaire pour utiliser variables globales
 
-	$nom=$_REQUEST['txtNom']; // txtNom = nom du champ texte dans le formulaire
+	$nom=$_REQUEST['txtNom'];
 	$mdp=$_REQUEST['txtMdp'];
 	\config\Validation::connexion_form($nom,$mdp, $dataVueErreur);
 
-$dataVue = array (
-	'nom' => $nom,
-	'mdp' => $mdp,
-	);
 	if(empty($dataVueErreur))
 	header('Location: /php/projet/controleur/ConListes.php');
 	else 
