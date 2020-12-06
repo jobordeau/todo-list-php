@@ -1,44 +1,60 @@
 <?php
 	require('Gateway.php');
-    require('../entites/Liste.php');
     
     class ListeGateway extends Gateway {
             
             function __construct(Connection $con){
                 parent::__construct($con);
-            }
-
+            }            
 
             public function findAllPublique(): array{                
                 $query = "SELECT * FROM ListePublique";
                 $this->con->executeQuery($query);
-                $listes = array();
-                
-                foreach ($this->con->getResults() as $row)
-                    array_push($listes, new Liste($row['ID'], $row['nom'], false));
-               return $listes;
+                return $this->con->getResults();
             }
 
-
-            public function findAllFromUtilisateur(Utilisateur $util): array{                
+            public function findAllFromUtilisateur(int $id): array{                
                 $query = "SELECT * FROM ListePrivee WHERE IDUtilisateur=:id";
-                $this->con->executeQuery($query, array(':id' => array($util->ID, PDO::PARAM_INT)));
-                $listes = array();
-                
-                foreach ($this->con->getResults() as $row)
-                    array_push($listes, new Liste($row['ID'], $row['nom'], true));
-               return $listes;
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));                
+                return $this->con->getResults();
+            }
+
+            public function insertListePrivee(string $nom, int $id): int{
+                $query = "INSERT INTO ListePrivee (nom, IDUtilisateur) VALUES(:nom,:id)";
+                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+                                                       ':id' => array($id, PDO::PARAM_INT)));
+                return $this->con->lastInsertId();
+            }
+
+            public function insertListePublique(string $nom): int{
+                $query = "INSERT INTO ListePublique (nom) VALUES(:nom)";
+                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_INT))); 
+                return $this->con->lastInsertId();
             }
 
 
-            public function updateNom(Liste $liste, string $nvNom): bool{
-                if($liste->privee) $table = "ListePrivee";
-                else $table = "ListePublique";
-
-                $query = "UPDATE $table SET nom=:nom WHERE ID=:id";
-                $retour = $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
-                                                                ':id' => array($liste->ID, PDO::PARAM_INT)));
-                return $retour;
+            public function updateListePrive(int $id, string $nvNom){
+                $query = "UPDATE ListePrivee SET nom=:nom WHERE ID=:id";
+                $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+                                                                ':id' => array($id, PDO::PARAM_INT)));
             }
+
+            public function updateListePublique(int $id, string $nvNom){
+                $query = "UPDATE ListePublique SET nom=:nom WHERE ID=:id";
+                $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+                                                                ':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function deleteListePrivee(int $id){
+                $query = "DELETE FROM ListePrivee WHERE ID=:id";
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function deleteListePublique(int $id){
+                $query = "DELETE FROM ListePublique WHERE ID=:id";
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+            }
+    
+
 
     }

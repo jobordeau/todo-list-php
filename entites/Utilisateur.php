@@ -23,12 +23,9 @@ class Utilisateur
     }
 
     public function __toString(){
-        $class=get_class($this);
-        $str="";
-        $str="$str Class : $class<br/>";
-        $str="$str ID : $this->ID<br/>";
-        $str="$str Nom : $this->nom<br/>";
-        $str="Mot de passe : $this->mdp<br/>";
+        $str="ID : $this->ID<br/>";
+        $str=$str."Nom : $this->nom<br/>";
+        $str=$str."Mot de passe : $this->mdp<br/>";
     return $str;
     }
 }

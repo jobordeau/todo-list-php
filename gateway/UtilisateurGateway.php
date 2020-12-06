@@ -1,44 +1,38 @@
 <?php
 	require('Gateway.php');
-	require('../entites/Utilisateur.php');
 	
     class UtilisateurGateway extends Gateway {
 		
         function __construct(Connection $con){
 			parent::__construct($con);
 		}
-	
-		public function find(string $nom, string $mdp ): array {
+
+		public function find(string $nom, string $mdp ){
 			$query = "SELECT * FROM utilisateur WHERE nom=:nom AND mdp=:mdp ";
-			$retour = $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+			$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
 															':mdp' => array($mdp, PDO::PARAM_STR)));
-			if($retour == false) return NULL; // Si le couple mdp/utilisateurs n'existe pas
-			return $this->con->getResults()[0];
+			$rows = $this->con->getResults();
+			if(empty($rows)) return NULL; // Si le couple mdp/utilisateurs n'existe pas
+			return $rows[0]['ID'];
 		}
 
 		public function insert(string $nom, string $mdp): int{
 			$query = "INSERT INTO utilisateur (nom, mdp) VALUES(:nom,:mdp)";
-			$retour = $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
-													':mdp' => array($mdp, PDO::PARAM_STR)));
-			if(!$retour) return NULL; // Si l'utilisateur existe déjà
-
-			// Sinon on retourne l'ID 							
-			$query = "SELECT ID FROM utilisateur WHERE nom=:nom";
-			$retour = $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR)));
-			return $this->con->getResults()[0]['ID'];
+			$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+															 ':mdp' => array($mdp, PDO::PARAM_STR)));
+			return $this->con->lastInsertId();
 		}
 
-		public function update(int $id, string $nvNom, string $nvMdp): bool{
-			$query = "UPDATE utilisateur SET nom=:nom AND mdp=:mdp WHERE ID=:id";
-			$retour = $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+		public function update(int $id, string $nvNom, string $nvMdp){
+			$query = "UPDATE utilisateur SET nom=:nom, mdp=:mdp WHERE ID=:id";
+			$this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
 															':mdp' => array($nvMdp, PDO::PARAM_STR),
 															':id' => array($id, PDO::PARAM_INT)));
-			return $retour;
 		}
 
-		public function delete(int $id): bool{
+		public function delete(int $id){
 			$query = "DELETE FROM utilisateur WHERE ID=:id";
-			return $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+			$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
 		}
 
 
@@ -50,6 +44,14 @@
 			foreach ($this->con->getResults() as $row)
 				array_push($utilisateurs, new Utilisateur($row['ID'], $row['nom'], $row['mdp']));
 			return $utilisateurs;
+		}
+		public function findByID(int $id){
+			$query = "SELECT * FROM utilisateur WHERE ID=:id";
+			$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_STR)));
+															
+			$rows = $this->con->getResults();
+			if(empty($rows)) return NULL; // Si le couple mdp/utilisateurs n'existe pas
+			return $rows[0];
 		}
 
 

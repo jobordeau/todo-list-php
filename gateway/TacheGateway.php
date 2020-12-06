@@ -1,7 +1,5 @@
 <?php
 	require('Gateway.php');
-    require('../entites/Tache.php');
-    require('../entites/Liste.php');
 
     
     class TacheGateway extends Gateway {
@@ -10,40 +8,67 @@
                 parent::__construct($con);
             }
 
-            public function findAllFromListe(Liste $liste): array{
-                $id = $liste->ID;
-                
-                if($liste->privee) $table = "TachePrivee";
-                else $table = "TachePublique";
-                
-                $query = "SELECT * FROM $table WHERE IDListe=:id";
+
+            public function findAllFromListePublique(int $id): array{
+                $query = "SELECT * FROM TachePublique WHERE IDListe=:id";
                 $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
-                $taches = array();
-                
-                foreach ($this->con->getResults() as $row)
-                    array_push($taches, new Tache($row['ID'], $row['nom'], $row['faite'], $liste->privee));
-               return $taches;
+                return $this->con->getResults();
             }
 
-            public function updateNom(Tache $tache, string $nvNom): bool{
-                if($tache->privee) $table = "TachePrivee";
-                else $table = "TachePublique";
-
-                $query = "UPDATE $table SET nom=:nom WHERE ID=:id";
-                $retour = $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
-                                                                ':id' => array($tache->ID, PDO::PARAM_INT)));
-                return $retour;
+            public function findAllFromListePrivee(int $id): array{
+                $query = "SELECT * FROM TachePrivee WHERE IDListe=:id";
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+                return $this->con->getResults();
             }
 
-            public function updateFaite(Tache $tache, bool $faite): bool{
-                if($tache->privee) $table = "TachePrivee";
-                else $table = "TachePublique";
-
-                $query = "UPDATE $table SET faite=:faite WHERE ID=:id";
-                $retour = $this->con->executeQuery($query, array(':faite' => array($faite, PDO::PARAM_BOOL),
-                                                                ':id' => array($tache->ID, PDO::PARAM_INT)));
-                return $retour;
+            public function insertTachePrivee(string $nom, int $id): int{
+                $query = "INSERT INTO TachePrivee (nom, faite, IDListe) VALUES(:nom, :faite, :id)";
+                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+                                                       ':faite' => array(false, PDO::PARAM_BOOL),
+                                                       ':id' => array($id, PDO::PARAM_INT)));
+                return $this->con->lastInsertId();
             }
 
+            public function insertTachePublique(string $nom, int $id): int{
+                $query = "INSERT INTO TachePublique (nom, faite, IDListe) VALUES(:nom, :faite, :id)";
+                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+                                                       ':faite' => array(false, PDO::PARAM_BOOL),
+                                                       ':id' => array($id, PDO::PARAM_INT)));
+                return $this->con->lastInsertId();
+            }
+
+            public function updateTachePrivee(int $id, string $nvNom){
+                $query = "UPDATE TachePrivee SET nom=:nom WHERE ID=:id";
+                $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+                                                                ':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function updateTachePublique(Tache $tache, string $nvNom){
+                $query = "UPDATE TachePublique SET nom=:nom WHERE ID=:id";
+                $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+                                                       ':id' => array($tache->ID, PDO::PARAM_INT)));
+            }
+
+            public function updateTachePriveeFaite(int $id, bool $faite){
+                $query = "UPDATE TachePrivee SET faite=:faite WHERE ID=:id";
+                $this->con->executeQuery($query, array(':faite' => array($faite, PDO::PARAM_BOOL),
+                                                        ':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function updateTachePubliqueFaite(int $id, bool $faite){
+                $query = "UPDATE TachePublique SET faite=:faite WHERE ID=:id";
+                $this->con->executeQuery($query, array(':faite' => array($faite, PDO::PARAM_BOOL),
+                                                        ':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function deleteTachePrivee(int $id){
+                $query = "DELETE FROM TachePrivee WHERE ID=:id";
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+            }
+
+            public function deleteTachePublique(int $id){
+                $query = "DELETE FROM TachePublique WHERE ID=:id";
+                $this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+            }
 
     }
