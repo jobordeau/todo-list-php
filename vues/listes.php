@@ -37,9 +37,11 @@
             $i=0; 
             foreach($_SESSION['listesPubliques'] as $liste){
                 echo "<input name='action' type='submit' value='❌'><table>
-                        <input name='indexPublique' type='text' value='$i' hidden>
-                        <input type='checkbox'value='privée'";if($liste->privee)echo "checked"; 
-                        echo">Privée ?
+                        <input name='indexPublique' type='text' value='$i' hidden>";
+                        if(isset($_SESSION['utilisateur'])){
+                            echo"<input type='checkbox'value='privée'>Privée ?";
+                        }
+                 echo"           
                 <tr>
                     <th>$liste->nom</th>
                 </tr>";
