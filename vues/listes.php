@@ -33,9 +33,13 @@
 <td id="listes" align="center">
 	<h2>Listes Publiques</h2>
     <form method="post">
-        <?php 
+        <?php
+            $i=0; 
             foreach($_SESSION['listesPubliques'] as $liste){
                 echo "<input name='action' type='submit' value='❌'><table>
+                        <input name='indexPublique' type='text' value='$i' hidden>
+                        <input type='checkbox'value='privée'";if($liste->privee)echo "checked"; 
+                        echo">Privée ?
                 <tr>
                     <th>$liste->nom</th>
                 </tr>";
@@ -50,6 +54,7 @@
                 echo "</table>
                         
                     </br>";
+                $i=$i+1;
             }
         ?>
     </form>
@@ -60,9 +65,13 @@ require ('listesPrivees.php');
 </tr>
 </table>
 <div align="center">
+<form method="post">
 <table>
     <tr>
         <th><input name='nomListe' type='text' value='Nom de la liste'></th>
+        <?php if(isset($_SESSION['utilisateur'])) 
+            echo "<input name='etatListe' type='checkbox' value='privee'>Privée ?"
+        ?>
     </tr>
     <tr>
         <td><input name='nomTache' type='text' value='Tache'>
@@ -76,6 +85,7 @@ require ('listesPrivees.php');
 <input name='action' type='submit' value='Ajouter la liste'>
 </br></br>
 <input name='action' type='submit' value='Confirmer les modifications'>
+</form>
 </div>
 
 </body> </html> 

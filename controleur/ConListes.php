@@ -41,13 +41,11 @@ try{
 {
 	//erreur BD
 	$dVueEreur[] =	"Erreur inattendue!!! ";
-	require ($rep.$vues['erreur']);
 
 }
 catch (Exception $e2)
 	{
 	$dVueEreur[] =	"Erreur inattendue!!! ";
-	require ($rep.$vues['erreur']);
 	}
 
 exit(0);
@@ -76,32 +74,57 @@ function initListes()  {
 }
 
 function CreerListe(){
-	//création dans la base de donnée
-	
-	$IDListe=0;
-	$IDTache=0;
+	$modele=new ModeleListe();
+	$modeleTache = new ModeleTache();
 	$nomListe=$_REQUEST['nomListe'];
-	$nomTache=$_REQUEST['nomTache']; // txtNom = nom du champ texte dans le formulaire
-	$privee=false;
-	
-	$tache=new Tache($IDTache,$nomTache,$privee);
-	$liste=new Liste($IDListe,$nomListe,$privee);
-	$liste->taches=array($tache);
-	array_push($_SESSION['listeVisible'],$liste);
+	$nomTache=$_REQUEST['nomTache'];
+	$etatListe=$_REQUEST['etatListe'];  
+	if(isset($etatListe)){
+		$privee = true;
+		
+		$liste=$modele->creerListePrivee($nomListe,$_SESSION['utilisateur']->ID);
+		$tache=$modeleTache->creerTache($nomTache,$privee, $liste->ID);
+		
+		$_SESSION['listesPrivees']=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
+		
+	}else{
+		$privee = false;
+
+		$liste=$modele->creerListePublique($nomListe);
+		$tache=$modeleTache->creerTache($nomTache,$privee, $liste->ID);
+
+		$_SESSION['listesPubliques']=$modele->trouverListePublique();
+	}
+
+	 
 	require (__DIR__.'/../vues/listes.php');
 
 
 }
 
 function SupprimerListe(){
+	$indexPrivee=$_REQUEST['indexPrivee'];
+	$indexPublique=$_REQUEST['indexPublique'];
+
 	//suppression dans la base de donnée
-	//	...
-
-	//temporaire juste pour tester
-	unset($_SESSION['listeVisible'][0]);
-
+	$modele=new ModeleListe();
+	$modeleTache = new ModeleTache();
+	if(isset($indexPrivee)){
+		foreach($_SESSION['listesPrivees'][$indexPrivee]->taches as $tache){
+			$modeleTache->supprimerTache($tache);
+		}
+		$modele->supprimerListe($_SESSION['listesPrivees'][$indexPrivee]);
+		unset($_SESSION['listesPrivees'][$indexPrivee]);
+	}else{
+		foreach($_SESSION['listesPubliques'][$indexPublique]->taches as $tache){
+			$modeleTache->supprimerTache($tache);
+		}
+		$modele->supprimerListe($_SESSION['listesPubliques'][$indexPublique]);
+		unset($_SESSION['listesPubliques'][$indexPublique]);
+	}
 	require (__DIR__.'/../vues/listes.php');
 }
+
 
 function Deconnexion(){
 	$_SESSION['utilisateur']=NULL;

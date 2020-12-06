@@ -7,8 +7,13 @@
 	<h2>Listes Privées</h2>
     <form method="post"  id="listes">
         <?php 
+            $i=0;
             foreach($_SESSION['listesPrivees'] as $liste){
-                echo "<input name='action' type='submit' value='❌'><table>
+                echo "<input name='action' type='submit' value='❌'>
+                <input name='indexPrivee' type='text' value='$i' hidden>
+                        <input type='checkbox'value='privée'";if($liste->privee)echo "checked"; 
+                        echo">Privée ?
+                <table>
                 <tr>
                     <th>$liste->nom</th>
                 </tr>";
@@ -23,6 +28,7 @@
                 echo "</table>
                         
                     </br>";
+                    $i=$i+1;
             }
         ?>
     </form>
