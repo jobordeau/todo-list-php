@@ -39,7 +39,7 @@ class Validation {
 
     }
 
-    static function connexion_form(string &$nom, string &$mdp, &$dVueEreur) {
+    static function connexion_form(string &$nom, string &$mdp, $utilisateur,&$dVueEreur) {
 
         if (!isset($nom)||$nom=="") {
             $dVueEreur[] =	"Identifiant incorrect";
@@ -57,20 +57,10 @@ class Validation {
             $dVueEreur[] =	"Mot de passe invalide";
             $mdp="";
         }
-
-        if(!isset($dVueEreur)){
-            return;
-        }else{
-            $modele=new ModeleUtilisateur();
-            $utilisateur=$modele->authentification($nom,$mdp);
-            if(!isset($utilisater)) {
-                $dVueEreur[] =	"Mot de passe ou identifiant incorrect";
-                $mdp="";
-            }else{
-                $_SESSION['utilisateur']=$utilisateur;
-            }
+        if(!isset($utilisateur)) {
+            $dVueEreur[] =	"Mot de passe ou identifiant incorrect";
+            $mdp="";
         }
-        //tester si l'identifiant et le mot de passe correspondent à un compte dans la bdd
     }
 
 }

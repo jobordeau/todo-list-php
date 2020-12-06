@@ -17,12 +17,14 @@
 </head>
 
 <body>
-
-<?php if(isset($_SESSION['listesPrivees'])) 
-    echo "<a href='listes.php'>Se déconnecter</a>"
+<?php 
+    if(isset($_SESSION['utilisateur'])) 
+        echo "<form method='post'><input name='action' type='submit' value='Se déconnecter'></form>";
+    else
+        echo "<a href='../controleur/ConSeConnecter.php'>Se connecter</a>
+              <a href='../controleur/ConInscription.php'>Créer un compte</a>";
 ?>
-<a href="../controleur/ConSeConnecter.php">Se connecter</a>
-<a href="../controleur/ConInscription.php">Créer un compte</a>
+
 
 
 
@@ -52,7 +54,7 @@
         ?>
     </form>
 </td>
-<?php if(isset($_SESSION['listesPrivees'])) 
+<?php if(isset($_SESSION['utilisateur'])) 
 require ('listesPrivees.php');
 ?>
 </tr>

@@ -23,6 +23,10 @@ try{
 	case "Ajouter la liste":
 		CreerListe();
 		break;
+	
+	case "Se déconnecter":
+		Deconnexion();
+		break;
 		
 	case "❌":
 		SupprimerListe();
@@ -59,11 +63,12 @@ function initListes()  {
 		$liste->taches=$modeleTache->trouverTacheListe($liste);
 	}
 	$_SESSION['listesPubliques']=$listesPuliques;
-	if(isset($_SESSION['listesPrivees'])){
-		$listesPrivees=$modele->trouverListeUtilisateur();
+	if(isset($_SESSION['utilisateur'])){
+		$listesPrivees=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
 		foreach($listesPrivees as $liste){
 			$liste->taches=$modeleTache->trouverTacheListe($liste);
 		}
+		$_SESSION['listesPrivees']=$listesPrivees;
 	}
 	
 
@@ -95,6 +100,11 @@ function SupprimerListe(){
 	//temporaire juste pour tester
 	unset($_SESSION['listeVisible'][0]);
 
+	require (__DIR__.'/../vues/listes.php');
+}
+
+function Deconnexion(){
+	$_SESSION['utilisateur']=NULL;
 	require (__DIR__.'/../vues/listes.php');
 }
 

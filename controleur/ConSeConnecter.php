@@ -58,12 +58,19 @@ function Connexion() {
 
 	$nom=$_REQUEST['txtNom'];
 	$mdp=$_REQUEST['txtMdp'];
-	\config\Validation::connexion_form($nom,$mdp, $dataVueErreur);
 
-	if(empty($dataVueErreur))
-	header('Location: /php/projet/controleur/ConListes.php');
-	else 
-	require (__DIR__.'/../vues/seConnecter.php');
+	$modele=new ModeleUtilisateur();
+	$utilisateur=$modele->authentification($nom,$mdp);
+	\config\Validation::connexion_form($nom,$mdp, $utilisateur, $dataVueErreur);
+	
+	if(empty($dataVueErreur)){
+		$_SESSION['utilisateur']=$utilisateur;
+		header('Location: /php/projet/controleur/ConListes.php');
+	}
+	else{
+		require (__DIR__.'/../vues/seConnecter.php');
+	} 
+	
 }
 
 

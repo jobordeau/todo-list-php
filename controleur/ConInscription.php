@@ -49,12 +49,6 @@ exit(0);
 
 
 function initInscription()  {
-$dataVue = array (
-	'nom' => "",
-	'mdp' => "",
-	'conf' => "",
-    );
-    
 	require (__DIR__.'/../vues/inscription.php');
 }
 
@@ -64,18 +58,39 @@ function Inscription() {
 	$nom=$_REQUEST['txtNom']; // txtNom = nom du champ texte dans le formulaire
 	$mdp=$_REQUEST['txtMdp'];
 	$conf=$_REQUEST['txtConf'];
-	\config\Validation::inscription_form($nom,$mdp, $conf, $dataVueErreur);
 
-$dataVue = array (
-	'nom' => $nom,
-	'mdp' => $mdp,
-	'conf' => $conf,
-	);
-	if(empty($dataVueErreur))
-	header('Location: /php/projet/controleur/ConseConnecter.php');
-	else 
-	require (__DIR__.'/../vues/inscription.php');
+	$modele=new ModeleUtilisateur();
+	$utilisateur=$modele->creerUtilisateur($nom,$mdp);
+	\config\Validation::inscription_form($nom,$mdp, $conf, $dataVueErreur);
+	
+	if(empty($dataVueErreur)){
+		$_SESSION['utilisateur']=$utilisateur;
+		header('Location: /php/projet/controleur/ConListes.php');
+	}	
+	else{
+		require (__DIR__.'/../vues/inscription.php');
+	} 
+	
 }
 
+function Connexion() {
+	global $dataVueErreur;// nécessaire pour utiliser variables globales
+
+	$nom=$_REQUEST['txtNom'];
+	$mdp=$_REQUEST['txtMdp'];
+
+	$modele=new ModeleUtilisateur();
+	$utilisateur=$modele->authentification($nom,$mdp);
+	\config\Validation::connexion_form($nom,$mdp, $utilisateur, $dataVueErreur);
+	
+	if(empty($dataVueErreur)){
+		$_SESSION['utilisateur']=$utilisateur;
+		header('Location: /php/projet/controleur/ConListes.php');
+	}
+	else{
+		require (__DIR__.'/../vues/seConnecter.php');
+	} 
+	
+}
 
 ?>
