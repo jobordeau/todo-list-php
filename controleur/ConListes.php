@@ -34,8 +34,8 @@ try{
 
 	//mauvaise action
 	default:
-	require (__DIR__.'/../vues/listes.php');
-	break;
+		require (__DIR__.'/../vues/listes.php');
+		break;
 	}
 } catch (PDOException $e)
 {
