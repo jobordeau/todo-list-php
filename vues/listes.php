@@ -66,6 +66,7 @@ require ('listesPrivees.php');
 ?>
 </tr>
 </table>
+
 <div align="center">
 <form method="post">
 <table>

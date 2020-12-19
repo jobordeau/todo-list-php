@@ -16,12 +16,12 @@
         public function authentification(string $nom, string $mdp){
             $id = $this->gtw->find( $nom, $mdp );
             if($id==NULL) return NULL; // Si non trouvé
-            return new Utilisateur($id, $nom, $mdp);
+            return new Utilisateur($id, $nom);
         }
 
         public function creerUtilisateur(string $nom, string $mdp){ // Exception si existe déjà ce nom
             $id = $this->gtw->insert($nom, $mdp);
-            return new Utilisateur($id, $nom, $mdp);
+            return new Utilisateur($id, $nom);
         }
 
         public function modifierUtilisateur(Utilisateur $uti, string $nvNom, string $nvMdp): bool{ // Exception si existe déjà ce nom
@@ -37,4 +37,11 @@
             return $this->gtw->delete($id);
         }
 
+
+        function estUtilisateur() {
+            if(!isset($_SESSION['utilisateur'])){
+                return false;
+            }
+            return true;
+		}
     }

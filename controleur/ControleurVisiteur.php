@@ -14,32 +14,50 @@ require_once(__DIR__.'/../entites/Utilisateur.php');
 
 
 class ControleurVisiteur { 
-
+    
     function __construct($action) {
         try{
             switch($action) {
                 case "afficherlistes":
-                    afficherListes();
+                    $this->afficherListes();
                     break;
 
                 case "ajouterliste":
-                    ajouterListe();
+                    $this->ajouterListe();
                     break;
                     
                 case "supprimerliste":
-                    supprimerListe();
+                    $this->supprimerListe();
                     break;
 
-                case "renommerliste":
-                    supprimerListe();
+                //case "renommerliste":
+                //    $this->renommerListe();
+                //    break;
+
+                /* Tâches :
+                case "ajoutertache":
+                    $this->ajouterTache();
                     break;
+
+                case "supprimertache":
+                    $this->supprimerTache();
+                    break;
+
+                case "renommertache":
+                    $this->renommerTache();
+                    break;
+
+                case "modifiertache":
+                    $this->modifierTache();
+                    break;
+                */
 
                 case "inscription":
-                    inscription();
+                    $this->inscription();
                     break;
 
-                case "Se connecter":
-                    connexion();
+                case "connexion":
+                    $this->connexion();
                     break;
 
                 default: //mauvaise action
@@ -49,7 +67,6 @@ class ControleurVisiteur {
         } catch (PDOException $e) {
             //erreur BDD
             $dVueEreur[] =	"Erreur inattendue!!! ";
-
         } catch (Exception $e2) {
             $dVueEreur[] =	"Erreur inattendue!!! ";
         }
@@ -58,147 +75,106 @@ class ControleurVisiteur {
     
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ///////////////
-
 
 
     function afficherListes() {	
         $modele = new ModeleListe();
         $modeleTache = new ModeleTache();
-        $listesPuliques=$modele->trouverListePublique();
-        foreach($listesPuliques as $liste){
+        $listesPubliques=$modele->trouverListePublique();
+
+        foreach($listesPubliques as $liste){
             $liste->taches=$modeleTache->trouverTacheListe($liste);
         }
-        $_SESSION['listesPubliques']=$listesPuliques;
-
-        if(isset($_SESSION['utilisateur'])){
-            $listesPrivees=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
-            foreach($listesPrivees as $liste){
-                $liste->taches=$modeleTache->trouverTacheListe($liste);
-            }
-            $_SESSION['listesPrivees']=$listesPrivees;
-        }
-        
+        $_SESSION['listesPubliques']=$listesPubliques;        
 
         require (__DIR__.'/../vues/listes.php');
     }
 
+    
     function ajouterListe(){
         $modele=new ModeleListe();
         $modeleTache = new ModeleTache();
         $nomListe=$_REQUEST['nomListe'];
         $nomTache=$_REQUEST['nomTache'];
-        $etatListe=$_REQUEST['etatListe'];  
-        if(isset($etatListe)){
-            $privee = true;
-            
-            $liste=$modele->creerListePrivee($nomListe,$_SESSION['utilisateur']->ID);
-            $tache=$modeleTache->creerTache($nomTache,$privee, $liste->ID);
-            
-            $_SESSION['listesPrivees']=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
-            
-        }else{
-            $privee = false;
 
-            $liste=$modele->creerListePublique($nomListe);
-            $tache=$modeleTache->creerTache($nomTache,$privee, $liste->ID);
+        $liste=$modele->creerListePublique($nomListe);
 
-            $_SESSION['listesPubliques']=$modele->trouverListePublique();
-        }
-
-        
+        $_SESSION['listesPubliques']=$modele->trouverListePublique();
+    
         require (__DIR__.'/../vues/listes.php');
     }
 
-    function deconnexion(){
-        $_SESSION['utilisateur']=NULL;
-        require (__DIR__.'/../vues/listes.php');
-    }
 
     function supprimerListe(){
-        $indexPrivee=$_REQUEST['indexPrivee'];
         $indexPublique=$_REQUEST['indexPublique'];
 
-        //suppression dans la base de donnée
         $modele=new ModeleListe();
         $modeleTache = new ModeleTache();
-        if(isset($indexPrivee)){
-            foreach($_SESSION['listesPrivees'][$indexPrivee]->taches as $tache){
-                $modeleTache->supprimerTache($tache);
-            }
-            $modele->supprimerListe($_SESSION['listesPrivees'][$indexPrivee]);
-            unset($_SESSION['listesPrivees'][$indexPrivee]);
-        }else{
-            foreach($_SESSION['listesPubliques'][$indexPublique]->taches as $tache){
-                $modeleTache->supprimerTache($tache);
-            }
-            $modele->supprimerListe($_SESSION['listesPubliques'][$indexPublique]);
-            unset($_SESSION['listesPubliques'][$indexPublique]);
+
+        foreach($_SESSION['listesPubliques'][$indexPublique]->taches as $tache){
+            $modeleTache->supprimerTache($tache);
         }
+        $modele->supprimerListe($_SESSION['listesPubliques'][$indexPublique]);
+
+        unset($_SESSION['listesPubliques'][$indexPublique]); // PEUT ETRE QUI FAUT RECREER LE TABLEAU DES LISTES PLUTOT
+
         require (__DIR__.'/../vues/listes.php');
     }
+
+
 
 
     function inscription() {
-        global $dataVueErreur;// nécessaire pour utiliser variables globales
+        global $dataVueErreur;
 
-        $nom=$_REQUEST['txtNom']; // txtNom = nom du champ texte dans le formulaire
+        $nom=$_REQUEST['txtNom'];
         $mdp=$_REQUEST['txtMdp'];
         $conf=$_REQUEST['txtConf'];
 
-        $modele=new ModeleUtilisateur();
-        $utilisateur=$modele->creerUtilisateur($nom,$mdp);
+        $mdlUtil=new ModeleUtilisateur();
         \config\Validation::inscription_form($nom,$mdp, $conf, $dataVueErreur);
+
+        try{
+            $utilisateur=$mdlUtil->creerUtilisateur($nom,$mdp);
+        } catch(PDOException $e){
+            $dataVueErreur[] =	"Cet utilisateur existe déjà";
+        }
         
         if(empty($dataVueErreur)){
             $_SESSION['utilisateur']=$utilisateur;
-            header('Location: /todo-liste-php/controleur/ConListes.php');
+            require (__DIR__.'/../vues/listes.php');
         }	
         else{
             require (__DIR__.'/../vues/inscription.php');
-        } 
-        
+        }
     }
 
 
     function connexion() {
-        global $dataVueErreur;// nécessaire pour utiliser variables globales
+        global $dataVueErreur;
 
         $nom=$_REQUEST['txtNom'];
         $mdp=$_REQUEST['txtMdp'];
 
         $modele=new ModeleUtilisateur();
+
+        \config\Validation::connexion_form($nom, $mdp, $utilisateur, $dataVueErreur);
+
         $utilisateur=$modele->authentification($nom,$mdp);
-        \config\Validation::connexion_form($nom,$mdp, $utilisateur, $dataVueErreur);
-        
+
+        if(!isset($utilisateur)) {
+            $dataVueErreur[] =	"Mot de passe ou identifiant incorrect";
+        }
+
         if(empty($dataVueErreur)){
             $_SESSION['utilisateur']=$utilisateur;
-            header('Location: /todo-liste-php/controleur/ConListes.php');
+            require (__DIR__.'/../vues/listes.php');
         }
         else{
             require (__DIR__.'/../vues/seConnecter.php');
         } 
-        
     }
 
 }
+

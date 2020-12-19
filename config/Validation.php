@@ -39,7 +39,7 @@ class Validation {
 
     }
 
-    static function connexion_form(string &$nom, string &$mdp, $utilisateur,&$dVueEreur) {
+    static function connexion_form(string &$nom, string &$mdp,&$dVueEreur) {
 
         if (!isset($nom)||$nom=="") {
             $dVueEreur[] =	"Identifiant incorrect";
@@ -55,10 +55,6 @@ class Validation {
 
         if (!isset($mdp)||$mdp=="") {
             $dVueEreur[] =	"Mot de passe invalide";
-            $mdp="";
-        }
-        if(!isset($utilisateur)) {
-            $dVueEreur[] =	"Mot de passe ou identifiant incorrect";
             $mdp="";
         }
     }

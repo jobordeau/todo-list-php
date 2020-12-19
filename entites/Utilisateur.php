@@ -3,16 +3,15 @@ class Utilisateur
 {
     private $ID;
     private $nom;
-    private $mdp;
     private $listes;
 
-    public function __construct ($ID, $nom, $mdp)
+    public function __construct ($ID, $nom)
     {
     $this->ID=$ID;
     $this->nom=$nom;
-    $this->mdp=$mdp;
     $this->listes=array();
     }
+    
 
     public function __get($propriete){
         return $this->$propriete;
