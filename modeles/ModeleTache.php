@@ -1,9 +1,9 @@
 <?php
-    require_once('../gateway/Connection.php');
-    require_once('../config/config.php');
-    require_once('../entites/Tache.php');
-    require_once('../entites/Liste.php');
-    require_once('../gateway/TacheGateway.php');
+    require_once(__DIR__.'/../gateway/Connection.php');
+    require_once(__DIR__.'/../config/config.php');
+    require_once(__DIR__.'/../entites/Tache.php');
+    require_once(__DIR__.'/../entites/Liste.php');
+    require_once(__DIR__.'/../gateway/TacheGateway.php');
     
 
     class ModeleTache {

@@ -5,7 +5,7 @@
 </head>
 
 <body>
-<a href="../controleur/ConInscription.php" url="">Créer un compte</a>
+<a href="inscription.php" url="">Créer un compte</a>
 <div align="center">
 
 

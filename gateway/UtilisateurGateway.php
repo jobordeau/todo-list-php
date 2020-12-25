@@ -7,13 +7,12 @@
 			parent::__construct($con);
 		}
 
-		public function find(string $nom, string $mdp ){
-			$query = "SELECT * FROM utilisateur WHERE nom=:nom AND mdp=:mdp ";
-			$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
-															':mdp' => array($mdp, PDO::PARAM_STR)));
+		public function find(string $nom){
+			$query = "SELECT * FROM utilisateur WHERE nom=:nom";
+			$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR)));
 			$rows = $this->con->getResults();
-			if(empty($rows)) return NULL; // Si le couple mdp/utilisateurs n'existe pas
-			return $rows[0]['ID'];
+			if(empty($rows)) return NULL; // Si l'utilisateurs n'existe pas
+			return $rows[0];
 		}
 
 		public function insert(string $nom, string $mdp): int{

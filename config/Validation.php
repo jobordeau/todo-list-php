@@ -1,6 +1,5 @@
 <?php
-namespace config;
-require(__DIR__.'/../modeles/ModeleUtilisateur.php');
+require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
 
 class Validation {
 
@@ -20,7 +19,7 @@ class Validation {
 
         if ($nom != filter_var($nom, FILTER_SANITIZE_STRING))
         {
-            $dVueEreur[] =	"testative d'injection de code (attaque sécurité)";
+            $dVueEreur[] =	"tentative d'injection de code (attaque sécurité)";
             $nom="";
 
         }
@@ -39,7 +38,7 @@ class Validation {
 
     }
 
-    static function connexion_form(string &$nom, string &$mdp,&$dVueEreur) {
+    static function connexion_form(string &$nom, string &$mdp, &$dVueEreur) {
 
         if (!isset($nom)||$nom=="") {
             $dVueEreur[] =	"Identifiant incorrect";

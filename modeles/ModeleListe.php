@@ -1,8 +1,8 @@
 <?php
-    require_once('../gateway/Connection.php');
-    require_once('../config/config.php');
-    require_once('../entites/Liste.php');
-    require_once('../gateway/ListeGateway.php');
+    require_once(__DIR__.'/../gateway/Connection.php');
+    require_once(__DIR__.'/../config/config.php');
+    require_once(__DIR__.'/../entites/Liste.php');
+    require_once(__DIR__.'/../gateway/ListeGateway.php');
     
 
     class ModeleListe {

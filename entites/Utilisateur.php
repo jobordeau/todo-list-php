@@ -24,7 +24,6 @@ class Utilisateur
     public function __toString(){
         $str="ID : $this->ID<br/>";
         $str=$str."Nom : $this->nom<br/>";
-        $str=$str."Mot de passe : $this->mdp<br/>";
     return $str;
     }
 }

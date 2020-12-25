@@ -1,8 +1,8 @@
 <?php
-    require_once('../gateway/Connection.php');
-    require_once('../config/config.php');
-    require_once('../entites/Utilisateur.php');
-    require_once('../gateway/UtilisateurGateway.php');
+    require_once(__DIR__.'/../gateway/Connection.php');
+    require_once(__DIR__.'/../config/config.php');
+    require_once(__DIR__.'/../entites/Utilisateur.php');
+    require_once(__DIR__.'/../gateway/UtilisateurGateway.php');
     
 
     class ModeleUtilisateur {
@@ -14,13 +14,19 @@
         }
 
         public function authentification(string $nom, string $mdp){
-            $id = $this->gtw->find( $nom, $mdp );
-            if($id==NULL) return NULL; // Si non trouvé
-            return new Utilisateur($id, $nom);
+            $row = $this->gtw->find($nom);
+            if($row==NULL) return NULL; // Si utilisateur inexistant
+
+            if (password_verify($mdp, $row['mdp'])) {
+                return new Utilisateur($row['ID'], $nom);
+            } else {
+                return NULL; // Si mot de passe incorrect
+            }
         }
 
         public function creerUtilisateur(string $nom, string $mdp){ // Exception si existe déjà ce nom
-            $id = $this->gtw->insert($nom, $mdp);
+            $hash = password_hash($mdp, PASSWORD_DEFAULT);
+            $id = $this->gtw->insert($nom, $hash);
             return new Utilisateur($id, $nom);
         }
 
@@ -39,9 +45,6 @@
 
 
         function estUtilisateur() {
-            if(!isset($_SESSION['utilisateur'])){
-                return false;
-            }
-            return true;
+            return isset($_SESSION['utilisateur']);
 		}
     }

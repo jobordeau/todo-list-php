@@ -28,7 +28,7 @@
 
             public function insertListePublique(string $nom): int{
                 $query = "INSERT INTO ListePublique (nom) VALUES(:nom)";
-                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_INT))); 
+                $this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR))); 
                 return $this->con->lastInsertId();
             }
 
@@ -36,7 +36,7 @@
             public function updateListePrive(int $id, string $nvNom){
                 $query = "UPDATE ListePrivee SET nom=:nom WHERE ID=:id";
                 $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
-                                                                ':id' => array($id, PDO::PARAM_INT)));
+                                                        ':id' => array($id, PDO::PARAM_INT)));
             }
 
             public function updateListePublique(int $id, string $nvNom){

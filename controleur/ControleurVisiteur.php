@@ -1,26 +1,31 @@
 <?php
 
-//chargement des classes
+//chargement des classes // A potentiellement enelver et utiliser un autoloader ?
 require_once(__DIR__.'/../config/Validation.php');
 require_once(__DIR__.'/../données/Stub.php');
 require_once(__DIR__.'/../modeles/ModeleListe.php');
 require_once(__DIR__.'/../modeles/ModeleTache.php');
 require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
-
-//Chargement des classes // A potentiellement enelver et utiliser un autoloader ?
-require_once(__DIR__.'/../config/Validation.php');
 require_once(__DIR__.'/../entites/Utilisateur.php');
-
 
 
 class ControleurVisiteur { 
     
     function __construct($action) {
         try{
-            switch($action) {
+            switch(strtolower($action)) {
+                case NULL:
                 case "afficherlistes":
                     $this->afficherListes();
                     break;
+
+                case "afficherinscription":
+                    $this->afficherInscription();
+                    break;
+
+                case "afficherconnexion":
+                    $this->afficherConnexion();
+                    break; 
 
                 case "ajouterliste":
                     $this->ajouterListe();
@@ -74,11 +79,10 @@ class ControleurVisiteur {
     }
     
 
-
     ///////////////
 
 
-    function afficherListes() {	
+    public static function afficherListes() {	
         $modele = new ModeleListe();
         $modeleTache = new ModeleTache();
         $listesPubliques=$modele->trouverListePublique();
@@ -88,52 +92,63 @@ class ControleurVisiteur {
         }
         $_SESSION['listesPubliques']=$listesPubliques;        
 
-        require (__DIR__.'/../vues/listes.php');
+        $mdlUtilisateur= new ModeleUtilisateur();
+
+        if($mdlUtilisateur->estUtilisateur()){
+            // Listes privées :
+            $listesPrivees=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
+            foreach($listesPrivees as $liste){
+                $liste->taches=$modeleTache->trouverTacheListe($liste);
+            }
+            $_SESSION['listesPrivees']=$listesPrivees;
+        }
+
+        unset($_REQUEST["action"]);
+        require (__DIR__.'/../vues/newlistes.php');
     }
 
     
     function ajouterListe(){
         $modele=new ModeleListe();
-        $modeleTache = new ModeleTache();
-        $nomListe=$_REQUEST['nomListe'];
-        $nomTache=$_REQUEST['nomTache'];
+        $nvListe=$_POST['nvListe'];
 
-        $liste=$modele->creerListePublique($nomListe);
+        $liste=$modele->creerListePublique($nvListe);
 
-        $_SESSION['listesPubliques']=$modele->trouverListePublique();
-    
-        require (__DIR__.'/../vues/listes.php');
+        $this->afficherListes();
     }
 
-
+    
     function supprimerListe(){
-        $indexPublique=$_REQUEST['indexPublique'];
-
         $modele=new ModeleListe();
         $modeleTache = new ModeleTache();
+        $indexPublique=$_POST['indexPublique'];
 
         foreach($_SESSION['listesPubliques'][$indexPublique]->taches as $tache){
             $modeleTache->supprimerTache($tache);
         }
         $modele->supprimerListe($_SESSION['listesPubliques'][$indexPublique]);
 
-        unset($_SESSION['listesPubliques'][$indexPublique]); // PEUT ETRE QUI FAUT RECREER LE TABLEAU DES LISTES PLUTOT
-
-        require (__DIR__.'/../vues/listes.php');
+        $this->afficherListes();
     }
 
 
+    function afficherInscription(){
+        require (__DIR__.'/../vues/newInscription.php');
+    }
 
+    function afficherConnexion(){
+        require (__DIR__.'/../vues/connexion.php');
+    }
 
     function inscription() {
         global $dataVueErreur;
 
-        $nom=$_REQUEST['txtNom'];
-        $mdp=$_REQUEST['txtMdp'];
-        $conf=$_REQUEST['txtConf'];
+        $nom=$_REQUEST['login'];
+        $mdp=$_REQUEST['mdp'];
+        $verif=$_REQUEST['verif'];
 
         $mdlUtil=new ModeleUtilisateur();
-        \config\Validation::inscription_form($nom,$mdp, $conf, $dataVueErreur);
+        Validation::inscription_form($nom,$mdp, $verif, $dataVueErreur);
 
         try{
             $utilisateur=$mdlUtil->creerUtilisateur($nom,$mdp);
@@ -143,10 +158,10 @@ class ControleurVisiteur {
         
         if(empty($dataVueErreur)){
             $_SESSION['utilisateur']=$utilisateur;
-            require (__DIR__.'/../vues/listes.php');
+            require (__DIR__.'/../vues/newlistes.php');
         }	
         else{
-            require (__DIR__.'/../vues/inscription.php');
+            require (__DIR__.'/../vues/newInscription.php');
         }
     }
 
@@ -154,25 +169,25 @@ class ControleurVisiteur {
     function connexion() {
         global $dataVueErreur;
 
-        $nom=$_REQUEST['txtNom'];
-        $mdp=$_REQUEST['txtMdp'];
-
+        $nom=$_REQUEST['login'];
+        $mdp=$_REQUEST['mdp'];
+        
         $modele=new ModeleUtilisateur();
 
-        \config\Validation::connexion_form($nom, $mdp, $utilisateur, $dataVueErreur);
+        Validation::connexion_form($nom, $mdp, $dataVueErreur);
 
         $utilisateur=$modele->authentification($nom,$mdp);
-
+    
         if(!isset($utilisateur)) {
             $dataVueErreur[] =	"Mot de passe ou identifiant incorrect";
         }
-
+        
         if(empty($dataVueErreur)){
-            $_SESSION['utilisateur']=$utilisateur;
-            require (__DIR__.'/../vues/listes.php');
+            $_SESSION['utilisateur'] = $utilisateur;
+            $this->afficherListes();
         }
         else{
-            require (__DIR__.'/../vues/seConnecter.php');
+            require (__DIR__.'/../vues/connexion.php');
         } 
     }
 

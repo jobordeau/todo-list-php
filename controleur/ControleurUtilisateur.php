@@ -7,11 +7,7 @@ class ControleurUtilisateur {
 
     function __construct($action) {
         try{
-            switch($action) {
-                
-                case "afficherlistesprivees":
-                    $this->afficherListesPrivees();
-                    break;
+            switch(strtolower($action)) {
 
                 case "ajouterlisteprivee":
                     $this->ajouterListePrivee();
@@ -39,7 +35,7 @@ class ControleurUtilisateur {
                     break;
                 */
                 
-                case "connexion":
+                case "deconnexion":
                     $this->deconnexion();
                     break;
 
@@ -61,57 +57,34 @@ class ControleurUtilisateur {
 
     ///////////////
 
-
-
-    function afficherListesPrivees() {	
-        $modele = new ModeleListe();
-        $modeleTache = new ModeleTache();
-
-        $listesPrivees=$modele->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
-        foreach($listesPrivees as $liste){
-            $liste->taches=$modeleTache->trouverTacheListe($liste);
-        }
-        $_SESSION['listesPrivees']=$listesPrivees;
-        
-        require (__DIR__.'/../vues/listes.php');
-    }
-
+                
     function ajouterListePrivee(){
-        $modeleListe=new ModeleListe();
-        $modeleTache = new ModeleTache();
+        $modele=new ModeleListe();
+        $nvListe=$_POST['nvListe'];
+        // VERIF ICI
 
-        $nomListe=$_REQUEST['nomListe'];
-        $nomTache=$_REQUEST['nomTache'];
-            
-        $liste=$modeleListe->creerListePrivee($nomListe,$_SESSION['utilisateur']->ID);
-        $tache=$modeleTache->creerTache($nomTache,true, $liste->ID);
-            
-        $_SESSION['listesPrivees']=$modeleListe->trouverListeUtilisateur($_SESSION['utilisateur']->ID);
-        
-        require (__DIR__.'/../vues/listes.php');
+        $liste=$modele->creerListePrivee($nvListe, $_SESSION['utilisateur']->ID);
+
+        ControleurVisiteur::afficherListes();
     }
 
     function supprimerListePrivee(){
-        $indexPrivee=$_REQUEST['indexPrivee'];
-
-        //suppression dans la base de donnée
-        $modeleListe=new ModeleListe();
+        $modele=new ModeleListe();
         $modeleTache = new ModeleTache();
-            foreach($_SESSION['listesPrivees'][$indexPrivee]->taches as $tache){
-                $modeleTache->supprimerTache($tache);
-            }
-            $modeleListe->supprimerListe($_SESSION['listesPrivees'][$indexPrivee]);
-            unset($_SESSION['listesPrivees'][$indexPrivee]);
-    
-        require (__DIR__.'/../vues/listes.php');
+        $indexPrivee=$_POST['indexPrivee'];
+
+        foreach($_SESSION['listesPrivees'][$indexPrivee]->taches as $tache){
+            $modeleTache->supprimerTache($tache);
+        }
+        $modele->supprimerListe($_SESSION['listesPrivees'][$indexPrivee]);
+
+        ControleurVisiteur::afficherListes();
     }
 
     function deconnexion(){
-        $_SESSION = array();
-        session_unset();
-        session_destroy();	
+        unset($_SESSION['utilisateur']);
 
-        require (__DIR__.'/../vues/listes.php');
+        require (__DIR__.'/../vues/newlistes.php');
     }
 
 }
