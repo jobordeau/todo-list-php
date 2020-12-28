@@ -37,7 +37,7 @@
            return $taches;
         }
      
-        public function modifierTache(Tache $ta, string $nvNom){
+        public function modifierTache(Tache &$ta, string $nvNom){
             if($ta->privee){
                 $this->gtw->updateTachePrivee($ta->ID, $nvNom);
             }
@@ -47,7 +47,7 @@
             $ta->nom = $nvNom;
         }
         
-        public function modifierEtat(Tache $ta, bool $faite){
+        public function modifierEtat(Tache &$ta, bool $faite){
             if($ta->privee){
                 $this->gtw->updateTachePriveeFaite($ta->ID, $faite);
             }

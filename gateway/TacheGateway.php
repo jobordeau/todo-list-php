@@ -43,10 +43,10 @@
                                                                 ':id' => array($id, PDO::PARAM_INT)));
             }
 
-            public function updateTachePublique(Tache $tache, string $nvNom){
+            public function updateTachePublique(int $id, string $nvNom){
                 $query = "UPDATE TachePublique SET nom=:nom WHERE ID=:id";
                 $this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
-                                                       ':id' => array($tache->ID, PDO::PARAM_INT)));
+                                                       ':id' => array($id, PDO::PARAM_INT)));
             }
 
             public function updateTachePriveeFaite(int $id, bool $faite){

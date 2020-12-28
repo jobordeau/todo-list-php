@@ -4,12 +4,12 @@
         <p class="col text-center" style="background-color: #E0C5BC;">Listes privées</p>
     </div>
 
-        <!-- CHARGEMENT LISTES -->
-        <?php
-            $l=0; 
-            foreach($_SESSION['listesPrivees'] as $liste){
-                echo "
-                <form class='row' method='post'>
+    <!-- CHARGEMENT LISTES -->
+    <?php
+    $l = 0;
+    foreach ($_SESSION['listesPrivees'] as $liste) {
+        echo "
+                <form method='post' id='formListePrivee$l'>
                     <input name='indexPrivee' type='text' value='$l' hidden>
 
                     <table class='table table-hover' >
@@ -18,40 +18,46 @@
                                 <th colspan='2'>$liste->nom</th>
                             </tr>
                         </thead>
-                        <tbody>";        
-            $t=0;     
-            // CHARGEMENT TACHES       
-            foreach($liste->taches as $tache){
-                if($tache->faite) $state = "checked"; else $state ="unchecked";
-                echo "   
-                <tr>
-                    <input name='indexTache' type='text' value='$t' hidden>
-                    <td>
-                        <input style='margin-top: 11px;' type='checkbox' name='action' $state>
-                        $tache->nom
-                    </td>
+                </form>
+                        <tbody>";
+        echo "<form method='post' id='formTachesListePrivee$l'>";
+        $t = 0;
+        // CHARGEMENT TACHES       
+        foreach ($liste->taches as $tache) {
+            if ($tache->faite) $state = "checked";
+            else $state = "unchecked";
+            echo "
+                    <form method='post'>   
+                        <tr>
+                            <input name='indexListe' type='number' value='$l' hidden>
+                            <input name='indexTache' type='number' value='$t' hidden>
+                            <td>
+                                <input type='checkbox' name='checkbox$t' form='formTachesListePrivee$l' style='margin-top: 11px;' $state>
+                                <label> $tache->nom <label>
+                            </td>
 
-                    <td width='10'>
-                        <input class='btn btn-outline-danger' name='action' type='submit' value='❌'>
-                    </td>
-                </tr>
-                ";
-                $t++;
-            }
-            // FIN TACHES
+                            <td width='10'>
+                                <button name='action' type='submit' value='supprimerTachePrivee' class='btn btn-outline-danger'>❌</button>
+                            </td>
+                        </tr>
+                    </form>
+                    
+                    ";
+            $t++;
+        }
+        // FIN TACHES
 
-                echo "
+        echo "  </form>
                         </tbody>
                     </table>
-                    <button name='action' type='submit' value='supprimerListePrivee' style='margin: 5px;' class='btn btn-outline-danger'>❌ Supprimer liste</button>
-                </form>
+                    <button name='action' type='submit' value='modifierEtatTachesPrivees' form='formTachesListePrivee$l' style='margin: 5px;' class='btn btn-outline-success'>✓ Enregistrer l'état des tâches</button> 
+                    
+                    <button name='action' type='submit' value='afficherModificationListePrivee' form='formListePrivee$l' style='margin: 5px;' class='btn btn-outline-info' >🖊️ Modifier la liste</button>
+                    <button name='action' type='submit' value='supprimerListePrivee' form='formListePrivee$l' style='margin: 5px;' class='btn btn-outline-danger'>❌ Supprimer la liste</button>
                 ";
-                $l++;
-            }   
-        ?>
-        <!--FIN LISTES-->
+        $l++;
+    }
+    ?>
+    <!--FIN LISTES-->
 
-    </div>
-
-
-
+</div>

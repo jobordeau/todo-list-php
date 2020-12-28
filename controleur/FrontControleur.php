@@ -17,9 +17,7 @@
 			}
 			else $action = "afficherlistes";
 
-			$actionsUtilisateur = ['ajouterListePrivee', 'supprimerListePrivee', 'renommerlisteprivee', 
-									'ajouterTacheprivee', 'supprimerTacheprivee', 'renommerTacheprivee','modifierTacheprivee', 
-									'deconnexion'];
+			$actionsUtilisateur = ['ajouterListePrivee', 'supprimerListePrivee','afficherModificationListePrivee', 'modifierListePrivee', 'ajouterTachePrivee','modifierEtatTachesPrivees' ,'supprimerTachePrivee','deconnexion'];
 			
 			if(in_array($action, $actionsUtilisateur)) {
 				$utilisateur=$mdlUtilisateur->estUtilisateur();

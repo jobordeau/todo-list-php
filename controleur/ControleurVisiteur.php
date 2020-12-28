@@ -7,6 +7,7 @@ require_once(__DIR__.'/../modeles/ModeleListe.php');
 require_once(__DIR__.'/../modeles/ModeleTache.php');
 require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
 require_once(__DIR__.'/../entites/Utilisateur.php');
+require_once(__DIR__.'/../entites/Tache.php');
 
 
 class ControleurVisiteur { 
@@ -35,27 +36,25 @@ class ControleurVisiteur {
                     $this->supprimerListe();
                     break;
 
-                //case "renommerliste":
-                //    $this->renommerListe();
-                //    break;
+                case "affichermodificationliste":
+                    $this->afficherModification();
+                    break;
 
-                /* Tâches :
+                case "modifierliste":
+                    $this->modifierListe();
+                    break;
+
                 case "ajoutertache":
                     $this->ajouterTache();
+                    break;
+                
+                case "modifieretattaches":
+                    $this->modifierEtatTaches();
                     break;
 
                 case "supprimertache":
                     $this->supprimerTache();
                     break;
-
-                case "renommertache":
-                    $this->renommerTache();
-                    break;
-
-                case "modifiertache":
-                    $this->modifierTache();
-                    break;
-                */
 
                 case "inscription":
                     $this->inscription();
@@ -106,18 +105,17 @@ class ControleurVisiteur {
         unset($_REQUEST["action"]);
         require (__DIR__.'/../vues/newlistes.php');
     }
-
     
     function ajouterListe(){
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
+        // VERIF ICI
 
         $liste=$modele->creerListePublique($nvListe);
 
         $this->afficherListes();
     }
 
-    
     function supprimerListe(){
         $modele=new ModeleListe();
         $modeleTache = new ModeleTache();
@@ -131,7 +129,78 @@ class ControleurVisiteur {
         $this->afficherListes();
     }
 
+    
+    function afficherModification(){
+        $_SESSION["listeActuelle"]=$_SESSION['listesPubliques'][$_POST['indexPublique']];
+        require (__DIR__.'/../vues/modifierListe.php');
+    }
 
+    function modifierListe(){
+        $modeleListe = new ModeleListe();
+        $modeleTache = new ModeleTache();
+        $liste = $_SESSION["listeActuelle"];
+
+        $nomListe = $_REQUEST['nomListe'];
+        $nbTaches = count($liste->taches);
+        
+        // Validations /!\
+
+        $modeleListe->modifierListe($liste, $nomListe);
+
+       for($i=0;$i<$nbTaches;$i++){
+            if(isset($_REQUEST["nvEtat$i"])) $faite = true; 
+            else $faite = false;
+            $nomTache = $_REQUEST["nvTache$i"];
+
+            $tache = $liste->taches[$i];
+            $modeleTache->modifierTache($tache, $nomTache);
+            $modeleTache->modifierEtat($tache, $faite);
+       }
+       unset($_SESSION["listeActuelle"]);
+       $this->afficherListes();
+    }
+
+    function modifierEtatTaches(){
+        $modeleTache = new ModeleTache();
+        
+        // S'il n'y a pas de tâches 
+        if(isset($_REQUEST['indexListe'])){
+            $liste = $_SESSION['listesPubliques'][$_REQUEST['indexListe']];
+        
+            $t=0;
+            foreach($liste->taches as $tache){
+                if(isset($_REQUEST["checkbox$t"])) $faite = true; 
+                else $faite = false;
+                $modeleTache->modifierEtat($tache, $faite);
+                $t++;
+            }
+        }
+        $this->afficherListes();
+    }
+
+    function supprimerTache(){
+        // Liste + lsite a chopper
+        $modeleTache = new ModeleTache();
+
+        $indexPublique=$_POST['indexListe'];
+        $indexTache = $_POST['indexTache'];
+
+        $tache = $_SESSION['listesPubliques'][$indexPublique]->taches[$indexTache];
+        
+        $modeleTache->supprimerTache($tache);
+                
+        $this->afficherListes();
+    }
+
+    function ajouterTache(){
+        $modele=new ModeleTache();
+        $nvTache = $modele->creerTache('Tâche sans nom', false, $_SESSION["listeActuelle"]->ID);
+        $nvTaches = $_SESSION["listeActuelle"]->taches;
+        array_push($nvTaches, $nvTache);
+        $_SESSION["listeActuelle"]->taches = $nvTaches;
+        require (__DIR__.'/../vues/modifierListe.php');
+    }
+    
     function afficherInscription(){
         require (__DIR__.'/../vues/newInscription.php');
     }
@@ -158,13 +227,12 @@ class ControleurVisiteur {
         
         if(empty($dataVueErreur)){
             $_SESSION['utilisateur']=$utilisateur;
-            require (__DIR__.'/../vues/newlistes.php');
+            $this->afficherListes();
         }	
         else{
             require (__DIR__.'/../vues/newInscription.php');
         }
     }
-
 
     function connexion() {
         global $dataVueErreur;

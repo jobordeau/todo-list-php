@@ -38,7 +38,7 @@
            return $listes;
         }
      
-        public function modifierListe(Liste $li, string $nvNom){
+        public function modifierListe(Liste &$li, string $nvNom){
             if($li->privee){
                 $this->gtw->updateListePrive($li->ID, $nvNom);
             }
