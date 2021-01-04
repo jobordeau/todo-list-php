@@ -1,9 +1,4 @@
 <?php
-	require_once(__DIR__.'/../entites/Utilisateur.php');
-	require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
-	require_once(__DIR__.'/ControleurVisiteur.php');
-	require_once(__DIR__.'/ControleurUtilisateur.php');
-
 	class FrontControleur {
 
 		function __construct() {
@@ -32,5 +27,3 @@
 		}
 		
 	}
-
-	new FrontControleur();

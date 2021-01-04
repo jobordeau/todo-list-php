@@ -1,8 +1,4 @@
 <?php
-
-require_once(__DIR__.'/../entites/Utilisateur.php');
-
-
 class ControleurUtilisateur { 
 
     function __construct($action) {

@@ -1,15 +1,4 @@
 <?php
-
-//chargement des classes // A potentiellement enelver et utiliser un autoloader ?
-require_once(__DIR__.'/../config/Validation.php');
-require_once(__DIR__.'/../données/Stub.php');
-require_once(__DIR__.'/../modeles/ModeleListe.php');
-require_once(__DIR__.'/../modeles/ModeleTache.php');
-require_once(__DIR__.'/../modeles/ModeleUtilisateur.php');
-require_once(__DIR__.'/../entites/Utilisateur.php');
-require_once(__DIR__.'/../entites/Tache.php');
-
-
 class ControleurVisiteur { 
     
     function __construct($action) {
