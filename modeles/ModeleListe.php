@@ -39,20 +39,12 @@
         }
      
         public function modifierListe(Liste &$li, string $nvNom){
-            if($li->privee){
-                $this->gtw->updateListePrive($li->ID, $nvNom);
-            }
-            else {
-                $this->gtw->updateListePublique($li->ID, $nvNom);
-            }
+            $this->gtw->updateListe($li->ID, $nvNom);
             $li->nom = $nvNom;
         }
 
         public function supprimerListe(Liste $li){
-            if($li->privee){
-                return $this->gtw->deleteListePrivee($li->ID);
-            }
-            $this->gtw->deleteListePublique($li->ID);
+            $this->gtw->deleteListe($li->ID);
         }
 
     }
