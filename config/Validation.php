@@ -23,11 +23,12 @@ class Validation {
             $nom="";
         }
 
-        if ($nom != filter_var($nom, FILTER_SANITIZE_STRING))
+        if ($nom != filter_var($nom, FILTER_SANITIZE_STRING) || $mdp != filter_var($mdp, FILTER_SANITIZE_STRING) || $conf != filter_var($conf, FILTER_SANITIZE_STRING))
         {
             $dVueEreur[] =	"tentative d'injection de code (attaque sécurité)";
             $nom="";
-
+            $mdp="";
+            $conf="";
         }
 
         if (!isset($mdp)||$mdp=="") {
@@ -59,11 +60,11 @@ class Validation {
             $nom="";
         }
 
-        if ($nom != filter_var($nom, FILTER_SANITIZE_STRING))
+        if ($nom != filter_var($nom, FILTER_SANITIZE_STRING) || $mdp != filter_var($mdp, FILTER_SANITIZE_STRING))
         {
             $dVueEreur[] =	"testative d'injection de code (attaque sécurité)";
             $nom="";
-
+            $mdp="";
         }
 
         if (!isset($mdp)||$mdp=="") {
@@ -76,8 +77,13 @@ class Validation {
         if (!isset($texte)||$texte=="") {
             $dVueEreur[] =	"Les champs ne peuvent pas être vide";
         }
-    }
 
+        if ($texte != filter_var($texte, FILTER_SANITIZE_STRING))
+        {
+            $dVueEreur[] =	"testative d'injection de code (attaque sécurité)";
+            $texte="";
+        }
+    }
 
 }
 ?>
