@@ -251,13 +251,14 @@ class ControleurVisiteur {
 
         Validation::connexion_form($nom, $mdp, $dataVueErreur);
 
-        $utilisateur=$modele->authentification($nom,$mdp);
+        
+        
+        if(empty($dataVueErreur)){
+            $utilisateur=$modele->authentification($nom,$mdp);
     
         if(!isset($utilisateur)) {
             $dataVueErreur[] =	"Mot de passe ou identifiant incorrect";
         }
-        
-        if(empty($dataVueErreur)){
             $_SESSION['utilisateur'] = $utilisateur;
             $this->afficherListes();
         }
