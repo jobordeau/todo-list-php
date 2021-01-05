@@ -1,10 +1,8 @@
 <?php
 	if (isset($dataVueErreur) && count($dataVueErreur)>0) {
+		$dataVueErreur=array_unique($dataVueErreur);
 		foreach ($dataVueErreur as $value){
-			if(next($dataVueErreur) != null)
-				echo "$value / <br>";
-			else
-				echo "$value ! <br>";
+			echo "$value ! <br>";
         }
-    }
+	}
 ?>

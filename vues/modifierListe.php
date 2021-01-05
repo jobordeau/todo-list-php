@@ -114,11 +114,13 @@
                         ?>
                 </form>
                 <!-- FIN LISTE -->         
-                     
+                   
             </div>
-                
+           
         </div>
-                
+        <div>
+            <?php require('vueErreur.php');?>
+        </div>     
     </div>
                     
 </div>

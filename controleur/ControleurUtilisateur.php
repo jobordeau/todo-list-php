@@ -42,12 +42,8 @@ class ControleurUtilisateur {
                     throw new Exception(); // Erreure inattendue
                     break;
             }
-        } catch (PDOException $e) {
-            //erreur BDD
-            $dVueEreur[] =	"Erreur inattendue!!! ";
-
-        } catch (Exception $e2) {
-            $dVueEreur[] =	"Erreur inattendue!!! ";
+        }catch (Exception $e) {
+            $dataVueErreur[] =	"Erreur inattendue!!! ";
         }
 
     }
@@ -60,11 +56,13 @@ class ControleurUtilisateur {
     function ajouterListePrivee(){
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
-        // VERIF ICI
+        Validation::nonVide($nvListe, $dataVueErreur);
 
-        $liste=$modele->creerListePrivee($nvListe, $_SESSION['utilisateur']->ID);
-
+        if(empty($dataVueErreur)){
+            $liste=$modele->creerListePrivee($nvListe, $_SESSION['utilisateur']->ID);
+        }
         ControleurVisiteur::afficherListes();
+        
     }
 
     function supprimerListePrivee(){
@@ -82,11 +80,13 @@ class ControleurUtilisateur {
 
     
     function afficherModificationPrivee(){
+        global $rep,$vues;
         $_SESSION["listeActuelle"]=$_SESSION['listesPrivees'][$_POST['indexPrivee']];
-        require (__DIR__.'/../vues/modifierListe.php');
+        require ($rep.$vues['modifierListe']);
     }
 
     function modifierListePrivee(){
+        global $dataVueErreur;
         $modeleListe = new ModeleListe();
         $modeleTache = new ModeleTache();
         $liste = $_SESSION["listeActuelle"];
@@ -94,7 +94,11 @@ class ControleurUtilisateur {
         $nomListe = $_REQUEST['nomListe'];
         $nbTaches = count($liste->taches);
         
-        // Validations /!\
+       Validation::NonVide($nomListe, $dataVueErreur);
+       if(!empty($dataVueErreur)){
+        ControleurVisiteur::afficherListes();
+        return;
+      }
 
         $modeleListe->modifierListe($liste, $nomListe);
 
@@ -102,13 +106,17 @@ class ControleurUtilisateur {
             if(isset($_REQUEST["nvEtat$i"])) $faite = true; 
             else $faite = false;
             $nomTache = $_REQUEST["nvTache$i"];
-
+            Validation::NonVide($nomTache, $dataVueErreur);
+            if(!empty($dataVueErreur)){
+                continue;
+            }
             $tache = $liste->taches[$i];
             $modeleTache->modifierTache($tache, $nomTache);
             $modeleTache->modifierEtat($tache, $faite);
        }
-       unset($_SESSION["listeActuelle"]);
-       ControleurVisiteur::afficherListes();
+        unset($_SESSION["listeActuelle"]);
+        ControleurVisiteur::afficherListes();
+       
     }
 
     function modifierEtatTachesPrivees(){
@@ -144,17 +152,19 @@ class ControleurUtilisateur {
     }
 
     function ajouterTachePrivee(){
+        global $rep,$vues;
         $modele=new ModeleTache();
         $nvTache = $modele->creerTache('Tâche sans nom', true, $_SESSION["listeActuelle"]->ID);
         $nvTaches = $_SESSION["listeActuelle"]->taches;
         array_push($nvTaches, $nvTache);
         $_SESSION["listeActuelle"]->taches = $nvTaches;
-        require (__DIR__.'/../vues/modifierListe.php');
+        require ($rep.$vues['modifierListe']);
     }
 
     function deconnexion(){
+        global $rep,$vues;
         unset($_SESSION['utilisateur']);
-        require (__DIR__.'/../vues/newlistes.php');
+        require ($rep.$vues['newlistes']);
     }
 
 }

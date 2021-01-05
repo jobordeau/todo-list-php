@@ -1,6 +1,7 @@
 <?php
 
 $rep=__DIR__.'/../';
+$rep=str_replace('\\', '/', $rep);
 
 // BDD
 

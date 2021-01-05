@@ -17,28 +17,44 @@
 
 		public function insert(string $nom, string $mdp): int{
 			$query = "INSERT INTO utilisateur (nom, mdp) VALUES(:nom,:mdp)";
-			$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
-															 ':mdp' => array($mdp, PDO::PARAM_STR)));
+			try{
+				$this->con->executeQuery($query, array(':nom' => array($nom, PDO::PARAM_STR),
+				':mdp' => array($mdp, PDO::PARAM_STR)));
+			}catch (PDOException $e) {
+				throw new Exception();
+			}
 			return $this->con->lastInsertId();
 		}
 
 		public function update(int $id, string $nvNom, string $nvMdp){
 			$query = "UPDATE utilisateur SET nom=:nom, mdp=:mdp WHERE ID=:id";
-			$this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
-															':mdp' => array($nvMdp, PDO::PARAM_STR),
-															':id' => array($id, PDO::PARAM_INT)));
+			try{
+				$this->con->executeQuery($query, array(':nom' => array($nvNom, PDO::PARAM_STR),
+				':mdp' => array($nvMdp, PDO::PARAM_STR),
+				':id' => array($id, PDO::PARAM_INT))); 
+			}catch (PDOException $e) {
+				throw new Exception();
+			}
 		}
 
 		public function delete(int $id){
 			$query = "DELETE FROM utilisateur WHERE ID=:id";
-			$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+			try{
+				$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_INT)));
+			}catch (PDOException $e) {
+				throw new Exception();
+			}
 		}
 
 
 		// PAS UTILE POUR LE MOMENT :
 		public function findAll(): array{
 			$query = "SELECT * FROM utilisateur";
-			$this->con->executeQuery($query);
+			try{
+				$this->con->executeQuery($query);  
+			}catch (PDOException $e) {
+				throw new Exception();
+			}
 			$utilisateurs = array();
 			foreach ($this->con->getResults() as $row)
 				array_push($utilisateurs, new Utilisateur($row['ID'], $row['nom'], $row['mdp']));
@@ -46,8 +62,11 @@
 		}
 		public function findByID(int $id){
 			$query = "SELECT * FROM utilisateur WHERE ID=:id";
-			$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_STR)));
-															
+			try{
+				$this->con->executeQuery($query, array(':id' => array($id, PDO::PARAM_STR)));
+			}catch (PDOException $e) {
+				throw new Exception();
+			}											
 			$rows = $this->con->getResults();
 			if(empty($rows)) return NULL; // Si le couple mdp/utilisateurs n'existe pas
 			return $rows[0];

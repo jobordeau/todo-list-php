@@ -155,7 +155,9 @@
             ?>
         </form>
     </div>
-
+    <div>
+       <?php require('vueErreur.php');?>
+    </div> 
 </body>
 
 </html>

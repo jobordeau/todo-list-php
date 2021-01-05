@@ -72,5 +72,12 @@ class Validation {
         }
     }
 
+    static function NonVide(string &$texte, &$dVueEreur) {
+        if (!isset($texte)||$texte=="") {
+            $dVueEreur[] =	"Les champs ne peuvent pas être vide";
+        }
+    }
+
+
 }
 ?>

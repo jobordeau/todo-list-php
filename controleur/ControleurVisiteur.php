@@ -57,11 +57,8 @@ class ControleurVisiteur {
                     throw new Exception(); // Erreure inattendue
                     break;
             }
-        } catch (PDOException $e) {
-            //erreur BDD
-            $dVueEreur[] =	"Erreur inattendue!!! ";
-        } catch (Exception $e2) {
-            $dVueEreur[] =	"Erreur inattendue!!! ";
+        }catch (Exception $e) {
+            $dataVueErreur[] =	"Erreur inattendue!!!";
         }
 
     }
@@ -70,7 +67,8 @@ class ControleurVisiteur {
     ///////////////
 
 
-    public static function afficherListes() {	
+    public static function afficherListes() {
+        global $rep,$vues;	
         $modele = new ModeleListe();
         $modeleTache = new ModeleTache();
         $listesPubliques=$modele->trouverListePublique();
@@ -92,15 +90,17 @@ class ControleurVisiteur {
         }
 
         unset($_REQUEST["action"]);
-        require (__DIR__.'/../vues/newlistes.php');
+        require ($rep.$vues['newlistes']);
     }
     
     function ajouterListe(){
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
-        // VERIF ICI
+        Validation::NonVide($nvListe, $dataVueErreur);
 
-        $liste=$modele->creerListePublique($nvListe);
+        if(empty($dataVueErreur)){
+            $liste=$modele->creerListePublique($nvListe);
+        }
 
         $this->afficherListes();
     }
@@ -120,11 +120,13 @@ class ControleurVisiteur {
 
     
     function afficherModification(){
+        global $rep,$vues;
         $_SESSION["listeActuelle"]=$_SESSION['listesPubliques'][$_POST['indexPublique']];
-        require (__DIR__.'/../vues/modifierListe.php');
+        require ($rep.$vues['modifierListe']);
     }
 
     function modifierListe(){
+        global $rep,$vues;
         $modeleListe = new ModeleListe();
         $modeleTache = new ModeleTache();
         $liste = $_SESSION["listeActuelle"];
@@ -132,7 +134,11 @@ class ControleurVisiteur {
         $nomListe = $_REQUEST['nomListe'];
         $nbTaches = count($liste->taches);
         
-        // Validations /!\
+        Validation::NonVide($nomListe, $dataVueErreur);
+       if(!empty($dataVueErreur)){
+            require ($rep.$vues['modifierListe']);
+            return;
+       }
 
         $modeleListe->modifierListe($liste, $nomListe);
 
@@ -140,13 +146,21 @@ class ControleurVisiteur {
             if(isset($_REQUEST["nvEtat$i"])) $faite = true; 
             else $faite = false;
             $nomTache = $_REQUEST["nvTache$i"];
-
+            Validation::NonVide($nomTache, $dataVueErreur);
+            if(!empty($dataVueErreur)){
+                continue;
+            }
             $tache = $liste->taches[$i];
             $modeleTache->modifierTache($tache, $nomTache);
             $modeleTache->modifierEtat($tache, $faite);
        }
-       unset($_SESSION["listeActuelle"]);
-       $this->afficherListes();
+       if(empty($dataVueErreur)){
+        unset($_SESSION["listeActuelle"]);
+        $this->afficherListes();
+        }else{
+            require ($rep.$vues['modifierListe']);
+        }
+       
     }
 
     function modifierEtatTaches(){
@@ -182,44 +196,48 @@ class ControleurVisiteur {
     }
 
     function ajouterTache(){
+        global $rep,$vues;
         $modele=new ModeleTache();
         $nvTache = $modele->creerTache('Tâche sans nom', false, $_SESSION["listeActuelle"]->ID);
         $nvTaches = $_SESSION["listeActuelle"]->taches;
         array_push($nvTaches, $nvTache);
         $_SESSION["listeActuelle"]->taches = $nvTaches;
-        require (__DIR__.'/../vues/modifierListe.php');
+        require ($rep.$vues['modifierListe']);
     }
     
     function afficherInscription(){
-        require (__DIR__.'/../vues/newInscription.php');
+        global $rep,$vues;
+        require ($rep.$vues['newInscription']);
     }
 
     function afficherConnexion(){
-        require (__DIR__.'/../vues/connexion.php');
+        global $rep,$vues;
+        require ($rep.$vues['connexion']);
     }
 
     function inscription() {
         global $dataVueErreur;
+        global $rep,$vues;
 
         $nom=$_REQUEST['login'];
         $mdp=$_REQUEST['mdp'];
         $verif=$_REQUEST['verif'];
 
         $mdlUtil=new ModeleUtilisateur();
+
         Validation::inscription_form($nom,$mdp, $verif, $dataVueErreur);
 
-        try{
-            $utilisateur=$mdlUtil->creerUtilisateur($nom,$mdp);
-        } catch(PDOException $e){
-            $dataVueErreur[] =	"Cet utilisateur existe déjà";
-        }
-        
         if(empty($dataVueErreur)){
+            try{
+                $utilisateur=$mdlUtil->creerUtilisateur($nom,$mdp);
+            } catch(Exception $e){
+                $dataVueErreur[] =	"Cet utilisateur existe déjà";
+            }
             $_SESSION['utilisateur']=$utilisateur;
             $this->afficherListes();
         }	
         else{
-            require (__DIR__.'/../vues/newInscription.php');
+            require ($rep.$vues['newInscription']);
         }
     }
 
@@ -244,7 +262,7 @@ class ControleurVisiteur {
             $this->afficherListes();
         }
         else{
-            require (__DIR__.'/../vues/connexion.php');
+            require ($rep.$vues['connexion']);
         } 
     }
 
