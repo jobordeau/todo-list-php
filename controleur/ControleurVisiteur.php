@@ -232,6 +232,8 @@ class ControleurVisiteur {
                 $utilisateur=$mdlUtil->creerUtilisateur($nom,$mdp);
             } catch(Exception $e){
                 $dataVueErreur[] =	"Cet utilisateur existe déjà";
+                require ($rep.$vues['newInscription']);
+                return;
             }
             $_SESSION['utilisateur']=$utilisateur;
             $this->afficherListes();
