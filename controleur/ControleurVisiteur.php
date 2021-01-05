@@ -243,7 +243,7 @@ class ControleurVisiteur {
 
     function connexion() {
         global $dataVueErreur;
-
+        global $rep,$vues;
         $nom=$_REQUEST['login'];
         $mdp=$_REQUEST['mdp'];
         
@@ -252,15 +252,18 @@ class ControleurVisiteur {
         Validation::connexion_form($nom, $mdp, $dataVueErreur);
 
         
+    
+       
         
         if(empty($dataVueErreur)){
             $utilisateur=$modele->authentification($nom,$mdp);
-    
-        if(!isset($utilisateur)) {
-            $dataVueErreur[] =	"Mot de passe ou identifiant incorrect";
-        }
-            $_SESSION['utilisateur'] = $utilisateur;
-            $this->afficherListes();
+            if(!isset($utilisateur)) {
+                $dataVueErreur[] =	"Mot de passe ou identifiant incorrect";
+                require ($rep.$vues['connexion']);
+            }else{
+                $_SESSION['utilisateur'] = $utilisateur;
+                $this->afficherListes(); 
+            }
         }
         else{
             require ($rep.$vues['connexion']);
