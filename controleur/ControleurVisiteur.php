@@ -54,7 +54,7 @@ class ControleurVisiteur {
                     break;
 
                 default: //mauvaise action
-                    throw new Exception(); // Erreure inattendue
+                    throw new Exception(); // Erreur inattendue
                     break;
             }
         }catch (Exception $e) {
@@ -92,16 +92,19 @@ class ControleurVisiteur {
         require ($rep.$vues['newlistes']);
     }
     
+
     function ajouterListe(){
+        global $rep,$vues;
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
         Validation::verifChamp($nvListe, $dataVueErreur);
 
         if(empty($dataVueErreur)){
             $liste=$modele->creerListePublique($nvListe);
+            $this->afficherListes();
+        }else{
+            require ($rep.$vues['newlistes']);
         }
-
-        $this->afficherListes();
     }
 
     function supprimerListe(){

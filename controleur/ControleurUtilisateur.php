@@ -39,7 +39,7 @@ class ControleurUtilisateur {
                     break;
 
                 default: //mauvaise action
-                    throw new Exception(); // Erreure inattendue
+                    throw new Exception(); // Erreur inattendue
                     break;
             }
         }catch (Exception $e) {
@@ -54,15 +54,18 @@ class ControleurUtilisateur {
 
                 
     function ajouterListePrivee(){
+        global $rep,$vues;
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
         Validation::verifChamp($nvListe, $dataVueErreur);
 
         if(empty($dataVueErreur)){
             $liste=$modele->creerListePrivee($nvListe, $_SESSION['utilisateur']->ID);
+            ControleurVisiteur::afficherListes();
+        }else{
+            require ($rep.$vues['newlistes']);
         }
-        ControleurVisiteur::afficherListes();
-        
+
     }
 
     function supprimerListePrivee(){
