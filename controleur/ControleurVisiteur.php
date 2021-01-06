@@ -89,7 +89,6 @@ class ControleurVisiteur {
             $_SESSION['listesPrivees']=$listesPrivees;
         }
 
-        unset($_REQUEST["action"]);
         require ($rep.$vues['newlistes']);
     }
     
