@@ -187,7 +187,6 @@ class ControleurVisiteur {
     }
 
     function supprimerTache(){
-        // Liste + lsite a chopper
         $modeleTache = new ModeleTache();
 
         $indexPublique=$_POST['indexListe'];

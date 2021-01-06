@@ -144,7 +144,6 @@ class ControleurUtilisateur {
     }
 
     function supprimerTachePrivee(){
-        // Liste + lsite a chopper
         $modeleTache = new ModeleTache();
 
         $indexPublique=$_POST['indexListe'];
