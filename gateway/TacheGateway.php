@@ -1,5 +1,4 @@
 <?php
-	require_once('Gateway.php');
 
     
     class TacheGateway extends Gateway {

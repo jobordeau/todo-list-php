@@ -1,8 +1,4 @@
 <?php
-    require_once(__DIR__.'/../gateway/Connection.php');
-    require_once(__DIR__.'/../config/config.php');
-    require_once(__DIR__.'/../entites/Utilisateur.php');
-    require_once(__DIR__.'/../gateway/UtilisateurGateway.php');
     
 
     class ModeleUtilisateur {
