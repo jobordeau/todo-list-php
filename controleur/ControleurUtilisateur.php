@@ -56,7 +56,7 @@ class ControleurUtilisateur {
     function ajouterListePrivee(){
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
-        Validation::nonVide($nvListe, $dataVueErreur);
+        Validation::verifChamp($nvListe, $dataVueErreur);
 
         if(empty($dataVueErreur)){
             $liste=$modele->creerListePrivee($nvListe, $_SESSION['utilisateur']->ID);
@@ -86,7 +86,7 @@ class ControleurUtilisateur {
     }
 
     function modifierListePrivee(){
-        global $dataVueErreur;
+        global $dataVueErreur, $rep, $vues;
         $modeleListe = new ModeleListe();
         $modeleTache = new ModeleTache();
         $liste = $_SESSION["listeActuelle"];
@@ -94,29 +94,35 @@ class ControleurUtilisateur {
         $nomListe = $_REQUEST['nomListe'];
         $nbTaches = count($liste->taches);
         
-       Validation::NonVide($nomListe, $dataVueErreur);
+       Validation::verifChamp($nomListe, $dataVueErreur);
        if(!empty($dataVueErreur)){
-        ControleurVisiteur::afficherListes();
-        return;
+            require ($rep.$vues['modifierListe']);
+            return;
       }
 
         $modeleListe->modifierListe($liste, $nomListe);
+
+
+        for($i=0;$i<$nbTaches;$i++){
+            $nomTache = $_REQUEST["nvTache$i"];
+            Validation::verifChamp($nomTache, $dataVueErreur);
+            if(!empty($dataVueErreur)){
+                require ($rep.$vues['modifierListe']);
+                return;
+            } 
+        }
 
        for($i=0;$i<$nbTaches;$i++){
             if(isset($_REQUEST["nvEtat$i"])) $faite = true; 
             else $faite = false;
             $nomTache = $_REQUEST["nvTache$i"];
-            Validation::NonVide($nomTache, $dataVueErreur);
-            if(!empty($dataVueErreur)){
-                continue;
-            }
+            
             $tache = $liste->taches[$i];
             $modeleTache->modifierTache($tache, $nomTache);
             $modeleTache->modifierEtat($tache, $faite);
        }
         unset($_SESSION["listeActuelle"]);
         ControleurVisiteur::afficherListes();
-       
     }
 
     function modifierEtatTachesPrivees(){

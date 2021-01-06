@@ -95,7 +95,7 @@ class ControleurVisiteur {
     function ajouterListe(){
         $modele=new ModeleListe();
         $nvListe=$_POST['nvListe'];
-        Validation::NonVide($nvListe, $dataVueErreur);
+        Validation::verifChamp($nvListe, $dataVueErreur);
 
         if(empty($dataVueErreur)){
             $liste=$modele->creerListePublique($nvListe);
@@ -125,7 +125,7 @@ class ControleurVisiteur {
     }
 
     function modifierListe(){
-        global $rep,$vues;
+        global $dataVueErreur, $rep,$vues;
         $modeleListe = new ModeleListe();
         $modeleTache = new ModeleTache();
         $liste = $_SESSION["listeActuelle"];
@@ -133,7 +133,7 @@ class ControleurVisiteur {
         $nomListe = $_REQUEST['nomListe'];
         $nbTaches = count($liste->taches);
         
-        Validation::NonVide($nomListe, $dataVueErreur);
+        Validation::verifChamp($nomListe, $dataVueErreur);
        if(!empty($dataVueErreur)){
             require ($rep.$vues['modifierListe']);
             return;
@@ -141,14 +141,20 @@ class ControleurVisiteur {
 
         $modeleListe->modifierListe($liste, $nomListe);
 
+        for($i=0;$i<$nbTaches;$i++){
+            $nomTache = $_REQUEST["nvTache$i"];
+            Validation::verifChamp($nomTache, $dataVueErreur);
+            if(!empty($dataVueErreur)) {
+                require ($rep.$vues['modifierListe']);
+                return;
+            }
+        }
+
        for($i=0;$i<$nbTaches;$i++){
             if(isset($_REQUEST["nvEtat$i"])) $faite = true; 
             else $faite = false;
             $nomTache = $_REQUEST["nvTache$i"];
-            Validation::NonVide($nomTache, $dataVueErreur);
-            if(!empty($dataVueErreur)){
-                continue;
-            }
+
             $tache = $liste->taches[$i];
             $modeleTache->modifierTache($tache, $nomTache);
             $modeleTache->modifierEtat($tache, $faite);

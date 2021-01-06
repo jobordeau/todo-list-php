@@ -73,7 +73,7 @@ class Validation {
         }
     }
 
-    static function NonVide(string &$texte, &$dVueEreur) {
+    static function verifChamp(string &$texte, &$dVueEreur) {
         if (!isset($texte)||$texte=="") {
             $dVueEreur[] =	"Les champs ne peuvent pas être vide";
         }
@@ -83,7 +83,11 @@ class Validation {
             $dVueEreur[] =	"testative d'injection de code (attaque sécurité)";
             $texte="";
         }
-    }
 
+        if (strlen($texte)>30) {
+            $dVueEreur[] =    "Le texte est trop long ";
+            $texte="";
+        }
+    }
 }
 ?>
